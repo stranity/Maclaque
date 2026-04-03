@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maclaque — Il te répond en français.</title>
+    <meta name="description" content="Gifle ton MacBook, il te répond en français. App macOS Apple Silicon. 4,99€ une seule fois.">
+    <meta property="og:title" content="Maclaque — Il te répond en français.">
+    <meta property="og:description" content="Gifle ton MacBook, il te répond en français. 6 packs de sons 100% FR.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stranity.github.io/maclaque">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           MACLAQUE LANDING PAGE — v1.0
+           Archétype : L'Audacieux | FR-first
+        ============================================ */
+
+        :root {
+            --color-primary: #FF2A1F;
+            --color-primary-dark: #E01A0F;
+            --color-primary-light: #FF5A54;
+            --color-bg: #0D0D17;
+            --color-surface: #16162A;
+            --color-border: #2A2A42;
+            --color-text-high: #F0F0F5;
+            --color-text-low: #8888AA;
+            --color-accent: #FFD60A;
+            --color-secondary: #1A1A2E;
+            --font-body: 'DM Sans', system-ui, sans-serif;
+            --radius-lg: 16px;
+            --radius-md: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text-high);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Nav ─────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 13, 23, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        .nav-cta {
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+        }
+
+        .nav-cta:hover { background: var(--color-primary-dark); }
+
+        /* ── Hero ────────────────────────────────── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 42, 31, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-emoji {
+            font-size: 5rem;
+            margin-bottom: 24px;
+            animation: slap 2s ease-in-out infinite;
+        }
+
+        @keyframes slap {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-15deg); }
+            20% { transform: rotate(10deg); }
+            30% { transform: rotate(0deg); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span { color: var(--color-primary); }
+
+        .hero-tagline {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            color: var(--color-text-low);
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-primary);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.125rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 0 32px rgba(255, 42, 31, 0.4);
+        }
+
+        .hero-cta:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 0 48px rgba(255, 42, 31, 0.5);
+        }
+
+        .hero-sub {
+            margin-top: 16px;
+            font-size: 0.875rem;
+            color: var(--color-text-low);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--color-accent);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── Sections ────────────────────────────── */
+        section {
+            padding: 96px 24px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title span { color: var(--color-primary); }
+
+        /* ── How it works ────────────────────────── */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 32px;
+        }
+
+        .step {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--color-primary);
+            border-radius: 50%;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .step h3 {
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+        }
+
+        /* ── Sound packs ─────────────────────────── */
+        .packs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .pack-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 24px 16px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: default;
+        }
+
+        .pack-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(255, 42, 31, 0.15);
+        }
+
+        .pack-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+
+        .pack-card h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .pack-card p {
+            font-size: 0.75rem;
+            color: var(--color-text-low);
+        }
+
+        .pack-clips {
+            font-size: 0.7rem;
+            color: var(--color-primary-light);
+            margin-top: 8px;
+        }
+
+        /* ── Compatibility ───────────────────────── */
+        .compat {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            text-align: center;
+        }
+
+        .compat-icon { font-size: 3rem; margin-bottom: 16px; }
+
+        .compat h3 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        .compat-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            list-style: none;
+        }
+
+        .compat-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+        }
+
+        .compat-list li::before {
+            content: '✓';
+            color: #4ADE80;
+            font-weight: 700;
+        }
+
+        /* ── Pricing ─────────────────────────────── */
+        .pricing-card {
+            background: var(--color-surface);
+            border: 2px solid var(--color-primary);
+            border-radius: var(--radius-lg);
+            padding: 48px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-accent);
+            color: #000;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .pricing-price {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin: 16px 0;
+        }
+
+        .pricing-price small {
+            font-size: 1rem;
+            color: var(--color-text-low);
+            font-weight: 400;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--color-primary);
+            font-weight: 700;
+        }
+
+        .pricing-cta {
+            display: block;
+            background: var(--color-primary);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.125rem;
+            transition: all 0.2s;
+            margin-top: 8px;
+        }
+
+        .pricing-cta:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* ── FAQ ──────────────────────────────────── */
+        .faq-list { max-width: 640px; margin: 0 auto; }
+
+        .faq-item {
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.25rem;
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .faq-item.open .faq-question::after { content: '−'; }
+
+        .faq-answer {
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+            margin-top: 12px;
+            display: none;
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer { display: block; }
+
+        /* ── Footer ──────────────────────────────── */
+        footer {
+            text-align: center;
+            padding: 48px 24px;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+
+        footer a:hover { text-decoration: underline; }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        /* ── Responsive ──────────────────────────── */
+        @media (max-width: 640px) {
+            nav { padding: 12px 16px; }
+            .hero { padding: 100px 16px 60px; }
+            .hero-emoji { font-size: 3.5rem; }
+            .compat { padding: 32px 20px; }
+            .pricing-card { padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <a href="#" class="nav-logo">Maclaque</a>
+    <a href="#pricing" class="nav-cta">Acheter 4,99€</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-badge">Nouveau — 100% Français</div>
+    <div class="hero-emoji">👋</div>
+    <h1>Gifle ton Mac.<br><span>Il te répond en français.</span></h1>
+    <p class="hero-tagline">"Putain mais t'es fou ?!" — Ton MacBook, probablement.</p>
+    <a href="#pricing" class="hero-cta">
+        Télécharger Maclaque
+    </a>
+    <p class="hero-sub">macOS 13+ · Apple Silicon M1+ · 4,99€ une seule fois</p>
+</section>
+
+<!-- Comment ça marche -->
+<section id="how">
+    <h2 class="section-title">Comment <span>ça marche</span></h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Installe Maclaque</h3>
+            <p>Télécharge le .dmg, glisse dans Applications. 30 secondes max.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Gifle ton Mac</h3>
+            <p>L'accéléromètre Apple Silicon détecte l'impact. Latence &lt; 50ms.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Il te répond</h3>
+            <p>Sons français hilarants. Volume proportionnel à la force. Filme et partage.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Sound Packs -->
+<section id="packs">
+    <h2 class="section-title">6 packs de <span>sons FR</span></h2>
+    <div class="packs-grid">
+        <div class="pack-card">
+            <div class="pack-emoji">😣</div>
+            <h3>Aïe !</h3>
+            <p>Douleur classique FR</p>
+            <div class="pack-clips">10 clips</div>
+        </div>
+        <div class="pack-card">
+            <div class="pack-emoji">😤</div>
+            <h3>Putain !</h3>
+            <p>Argot parisien PG-13</p>
+            <div class="pack-clips">10 clips</div>
+        </div>
+        <div class="pack-card">
+            <div class="pack-emoji">👵</div>
+            <h3>Mamie</h3>
+            <p>Grand-mère choquée</p>
+            <div class="pack-clips">10 clips</div>
+        </div>
+        <div class="pack-card">
+            <div class="pack-emoji">💸</div>
+            <h3>SMIC</h3>
+            <p>Mèmes économiques</p>
+            <div class="pack-clips">10 clips</div>
+        </div>
+        <div class="pack-card">
+            <div class="pack-emoji">🇫🇷</div>
+            <h3>Président</h3>
+            <p>Pastiche politique</p>
+            <div class="pack-clips">10 clips</div>
+        </div>
+        <div class="pack-card">
+            <div class="pack-emoji">🏢</div>
+            <h3>Populaire</h3>
+            <p>Argot des quartiers</p>
+            <div class="pack-clips">11 clips</div>
+        </div>
+    </div>
+</section>
+
+<!-- Compatibility -->
+<section id="compat">
+    <div class="compat">
+        <div class="compat-icon">💻</div>
+        <h3>Compatible MacBook Apple Silicon</h3>
+        <ul class="compat-list">
+            <li>MacBook Air M1/M2/M3/M4</li>
+            <li>MacBook Pro M1/M2/M3/M4</li>
+            <li>macOS 13 Ventura et +</li>
+            <li>Puce Apple Silicon requise</li>
+        </ul>
+        <p style="margin-top: 16px; color: var(--color-text-low); font-size: 0.8rem;">
+            Non compatible Intel. L'accéléromètre est exclusif aux puces Apple Silicon.
+        </p>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing">
+    <h2 class="section-title"><span>4,99€</span> une seule fois. À vie.</h2>
+    <div class="pricing-card">
+        <div class="pricing-badge">Prix de lancement</div>
+        <h3>Maclaque</h3>
+        <div class="pricing-price">4,99€ <small>TTC</small></div>
+        <ul class="pricing-features">
+            <li>6 packs de sons français (121 clips)</li>
+            <li>Détection de gifle intelligente</li>
+            <li>Sons de charge (branchement / débranchement)</li>
+            <li>Sons de couvercle (ouverture / fermeture)</li>
+            <li>Volume proportionnel à la force</li>
+            <li>Mises à jour gratuites à vie</li>
+            <li>100% local — zéro tracking</li>
+            <li>3 gifles gratuites pour tester</li>
+        </ul>
+        <a href="https://maclaque.lemonsqueezy.com/buy/maclaque" class="pricing-cta">
+            Acheter Maclaque — 4,99€
+        </a>
+        <a href="https://github.com/stranity/maclaque/releases/latest/download/Maclaque-v1.0.dmg" class="pricing-cta" style="background: var(--color-surface); border: 1px solid var(--color-border); margin-top: 12px;">
+            Télécharger (3 gifles gratuites)
+        </a>
+    </div>
+</section>
+
+<!-- Installation -->
+<section id="installation">
+    <h2 class="section-title">Installation <span>en 2 min</span></h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Téléchargez le DMG</h3>
+            <p>Cliquez sur le bouton ci-dessus. Le fichier fait 5 Mo.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Ouvrez l'app</h3>
+            <p>Glissez Maclaque dans Applications. Au premier lancement, macOS affiche un avertissement.<br>
+            <strong>Allez dans Réglages Système → Confidentialité et sécurité</strong>, puis cliquez "Ouvrir quand même".</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Installez le daemon</h3>
+            <p>L'app vous guide : cliquez "Installer", entrez votre mot de passe Mac. C'est fait — giflez !</p>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+    <h2 class="section-title">Questions <span>fréquentes</span></h2>
+    <div class="faq-list">
+        <div class="faq-item">
+            <div class="faq-question">Pourquoi l'app a besoin de sudo / droits admin ?</div>
+            <div class="faq-answer">
+                Apple ne donne pas accès à l'accéléromètre via une API publique. Maclaque utilise un petit daemon
+                qui tourne en root pour lire le capteur. C'est la même architecture que les apps similaires
+                en anglais (SlapMac, OpenSlap). Le daemon ne fait rien d'autre que lire le capteur et transmettre
+                les données à l'app.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Mon Mac est compatible ?</div>
+            <div class="faq-answer">
+                Maclaque fonctionne sur tous les MacBook avec puce Apple Silicon (M1, M2, M3, M4 et variants Pro/Max/Ultra).
+                Les Mac Intel ne sont pas compatibles car ils n'ont pas le même capteur.
+                Minimum macOS 13 (Ventura).
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">C'est sûr pour mon Mac ? Pas de dégâts ?</div>
+            <div class="faq-answer">
+                Oui. Une gifle raisonnable ne va pas endommager votre MacBook — les charnières et le châssis sont conçus
+                pour résister à bien pire. Évidemment, ne frappez pas avec un marteau. C'est du fun, pas du MMA.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Vous collectez des données ?</div>
+            <div class="faq-answer">
+                Non. Zéro. Maclaque est 100% local. Pas d'analytics, pas de crash reporter, pas de connexion serveur
+                (sauf pour valider la licence à l'achat). Conforme RGPD par design.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Remboursement possible ?</div>
+            <div class="faq-answer">
+                Si votre Mac n'est pas compatible ou si l'app ne fonctionne pas, contactez-nous par email
+                et on vous rembourse sans question. C'est 4,99€, on va pas se battre.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Pourquoi pas sur l'App Store ?</div>
+            <div class="faq-answer">
+                L'App Store ne permet pas aux apps d'accéder à l'accéléromètre via IOKit (sandbox trop restrictive).
+                La distribution directe est la seule option technique. macOS affichera un avertissement au premier lancement —
+                allez dans Réglages Système → Confidentialité et sécurité → "Ouvrir quand même".
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-links">
+        <a href="mailto:contact.maclaque@gmail.com">Contact</a>
+        <a href="https://instagram.com/maclaque" target="_blank">Instagram</a>
+        <a href="https://tiktok.com/@maclaque" target="_blank">TikTok</a>
+        <a href="https://x.com/maclaque" target="_blank">X / Twitter</a>
+    </div>
+    <p>© 2026 Maclaque. Fait avec ❤️ en France.</p>
+    <p style="margin-top: 8px; font-size: 0.75rem;">
+        100% local. Zéro tracking. Conforme RGPD.
+    </p>
+</footer>
+
+<!-- FAQ toggle script -->
+<script>
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => {
+            q.parentElement.classList.toggle('open');
+        });
+    });
+</script>
+
+</body>
+</html>

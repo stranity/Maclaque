@@ -1,0 +1,29 @@
+{
+  "id": "president",
+  "name": "Président",
+  "description": "Pastiches discours politiques FR",
+  "icon": "building.columns.fill",
+  "emoji": "🇫🇷",
+  "clips": [
+    { "file": "pres_calme_01.mp3", "intensity": "light" },
+    { "file": "pres_calme_02.mp3", "intensity": "light" },
+    { "file": "pres_calme_03.mp3", "intensity": "light" },
+    { "file": "pres_agace_01.mp3", "intensity": "medium" },
+    { "file": "pres_agace_02.mp3", "intensity": "medium" },
+    { "file": "pres_agace_03.mp3", "intensity": "medium" },
+    { "file": "pres_colere_01.mp3", "intensity": "hard" },
+    { "file": "pres_colere_02.mp3", "intensity": "hard" },
+    { "file": "pres_colere_03.mp3", "intensity": "hard" },
+    { "file": "pres_colere_04.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}

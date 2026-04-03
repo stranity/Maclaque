@@ -1,0 +1,29 @@
+{
+  "id": "mamie",
+  "name": "Mamie",
+  "description": "Voix grand-mère choquée, tons de reproche",
+  "icon": "eyeglasses",
+  "emoji": "👵",
+  "clips": [
+    { "file": "mamie_doucement_01.mp3", "intensity": "light" },
+    { "file": "mamie_doucement_02.mp3", "intensity": "light" },
+    { "file": "mamie_doucement_03.mp3", "intensity": "light" },
+    { "file": "mamie_reproche_01.mp3", "intensity": "medium" },
+    { "file": "mamie_reproche_02.mp3", "intensity": "medium" },
+    { "file": "mamie_reproche_03.mp3", "intensity": "medium" },
+    { "file": "mamie_cri_01.mp3", "intensity": "hard" },
+    { "file": "mamie_cri_02.mp3", "intensity": "hard" },
+    { "file": "mamie_cri_03.mp3", "intensity": "hard" },
+    { "file": "mamie_cri_04.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}

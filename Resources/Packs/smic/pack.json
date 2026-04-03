@@ -1,0 +1,29 @@
+{
+  "id": "smic",
+  "name": "SMIC",
+  "description": "Complaintes de précaires FR, mèmes économiques",
+  "icon": "eurosign.circle.fill",
+  "emoji": "💸",
+  "clips": [
+    { "file": "smic_soupir_01.mp3", "intensity": "light" },
+    { "file": "smic_soupir_02.mp3", "intensity": "light" },
+    { "file": "smic_soupir_03.mp3", "intensity": "light" },
+    { "file": "smic_pleurs_01.mp3", "intensity": "medium" },
+    { "file": "smic_pleurs_02.mp3", "intensity": "medium" },
+    { "file": "smic_ral_01.mp3", "intensity": "medium" },
+    { "file": "smic_ral_02.mp3", "intensity": "medium" },
+    { "file": "smic_cri_01.mp3", "intensity": "hard" },
+    { "file": "smic_cri_02.mp3", "intensity": "hard" },
+    { "file": "smic_cri_03.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}

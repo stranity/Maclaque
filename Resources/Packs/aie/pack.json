@@ -1,0 +1,29 @@
+{
+  "id": "aie",
+  "name": "Aïe !",
+  "description": "Expressions de douleur FR classiques",
+  "icon": "bandage.fill",
+  "emoji": "😣",
+  "clips": [
+    { "file": "aie_01.mp3", "intensity": "light" },
+    { "file": "aie_02.mp3", "intensity": "light" },
+    { "file": "aie_03.mp3", "intensity": "light" },
+    { "file": "ouille_01.mp3", "intensity": "medium" },
+    { "file": "ouille_02.mp3", "intensity": "medium" },
+    { "file": "aie_fort_01.mp3", "intensity": "medium" },
+    { "file": "aie_fort_02.mp3", "intensity": "medium" },
+    { "file": "cri_01.mp3", "intensity": "hard" },
+    { "file": "cri_02.mp3", "intensity": "hard" },
+    { "file": "cri_03.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}

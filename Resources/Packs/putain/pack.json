@@ -1,0 +1,29 @@
+{
+  "id": "putain",
+  "name": "Putain !",
+  "description": "Argot parisien & réactions vulgaires PG-13",
+  "icon": "flame.fill",
+  "emoji": "😤",
+  "clips": [
+    { "file": "putain_01.mp3", "intensity": "light" },
+    { "file": "putain_02.mp3", "intensity": "light" },
+    { "file": "putain_03.mp3", "intensity": "light" },
+    { "file": "bordel_01.mp3", "intensity": "medium" },
+    { "file": "bordel_02.mp3", "intensity": "medium" },
+    { "file": "merde_01.mp3", "intensity": "medium" },
+    { "file": "merde_02.mp3", "intensity": "medium" },
+    { "file": "putain_forte_01.mp3", "intensity": "hard" },
+    { "file": "putain_forte_02.mp3", "intensity": "hard" },
+    { "file": "putain_forte_03.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "populaire",
+  "name": "Populaire",
+  "description": "Réactions de tess — argot des quartiers populaires",
+  "icon": "building.2.fill",
+  "emoji": "🏢",
+  "clips": [
+    { "file": "pop_light_01.mp3", "intensity": "light" },
+    { "file": "pop_light_02.mp3", "intensity": "light" },
+    { "file": "pop_light_03.mp3", "intensity": "light" },
+    { "file": "pop_medium_01.mp3", "intensity": "medium" },
+    { "file": "pop_medium_02.mp3", "intensity": "medium" },
+    { "file": "pop_medium_03.mp3", "intensity": "medium" },
+    { "file": "pop_medium_04.mp3", "intensity": "medium" },
+    { "file": "pop_hard_01.mp3", "intensity": "hard" },
+    { "file": "pop_hard_02.mp3", "intensity": "hard" },
+    { "file": "pop_hard_03.mp3", "intensity": "hard" },
+    { "file": "pop_hard_04.mp3", "intensity": "hard" },
+    { "file": "charge_plug_01.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_02.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_plug_03.mp3", "intensity": "medium", "trigger": "charge_plug" },
+    { "file": "charge_unplug_01.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_02.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "charge_unplug_03.mp3", "intensity": "medium", "trigger": "charge_unplug" },
+    { "file": "lid_close_01.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_close_02.mp3", "intensity": "medium", "trigger": "lid_close" },
+    { "file": "lid_open_01.mp3", "intensity": "medium", "trigger": "lid_open" },
+    { "file": "lid_open_02.mp3", "intensity": "medium", "trigger": "lid_open" }
+  ]
+}
