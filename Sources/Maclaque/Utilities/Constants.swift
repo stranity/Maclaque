@@ -24,6 +24,6 @@ enum Constants {
     static let keyHasCompletedOnboarding = "maclaque.hasCompletedOnboarding"
 
     // LemonSqueezy
-    static let lemonSqueezyCheckoutURL = "https://maclaque.lemonsqueezy.com/buy/maclaque"
+    static let lemonSqueezyCheckoutURL = "https://maclaque.lemonsqueezy.com/checkout/buy/651fea4d-9ce5-4478-a1fa-09f054b8556b"
     static let lemonSqueezyValidateURL = "https://api.lemonsqueezy.com/v1/licenses/validate"
 }
