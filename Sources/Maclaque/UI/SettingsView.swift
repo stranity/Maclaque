@@ -13,6 +13,12 @@ struct SettingsView: View {
                     Label("Général", systemImage: "gear")
                 }
 
+            CustomPackView()
+                .environmentObject(appState)
+                .tabItem {
+                    Label("Pack custom", systemImage: "wand.and.stars")
+                }
+
             licenseTab
                 .tabItem {
                     Label("Licence", systemImage: "key.fill")
@@ -23,7 +29,7 @@ struct SettingsView: View {
                     Label("À propos", systemImage: "info.circle")
                 }
         }
-        .frame(width: 420, height: 320)
+        .frame(width: 420, height: 520)
     }
 
     // ── General tab ────────────────────────────────────────────────────
