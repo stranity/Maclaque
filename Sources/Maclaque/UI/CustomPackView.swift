@@ -1,13 +1,14 @@
 import SwiftUI
 
-/// View for creating custom sound packs via ElevenLabs TTS
+/// Simple view for creating custom sound packs — no API key needed, uses built-in key
 struct CustomPackView: View {
     @EnvironmentObject var appState: AppState
     @State private var packName = ""
-    @State private var apiKey = ""
     @State private var selectedVoiceIndex = 0
     @State private var clips: [CustomClipEntry] = [
-        CustomClipEntry(text: "", trigger: "slap"),
+        CustomClipEntry(text: ""),
+        CustomClipEntry(text: ""),
+        CustomClipEntry(text: ""),
     ]
     @State private var isGenerating = false
     @State private var progress = 0
@@ -15,27 +16,20 @@ struct CustomPackView: View {
     @State private var successMessage: String?
 
     private let voices = ElevenLabsService.voices
-    private let triggers = ["slap", "charge_plug", "charge_unplug", "lid_open", "lid_close"]
-    private let triggerLabels = ["Gifle", "Branchement", "Débranchement", "Ouverture", "Fermeture"]
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                // Header
-                Text("Créer un pack custom")
+                Text("Crée ton pack")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(Color(hex: "FF2A1F"))
 
-                Text("Utilise l'IA pour générer tes propres sons. Tu as besoin d'une clé API ElevenLabs (gratuit jusqu'à 10 000 caractères/mois).")
+                Text("Tape ce que ton Mac doit dire quand tu le gifles.\nMax 3 packs, 5 phrases chacun.")
                     .font(.caption)
                     .foregroundColor(Color(hex: "8888AA"))
 
-                // API Key
-                SecureField("Clé API ElevenLabs", text: $apiKey)
-                    .textFieldStyle(.roundedBorder)
-
                 // Pack name
-                TextField("Nom du pack (ex: Mon Pack)", text: $packName)
+                TextField("Nom du pack", text: $packName)
                     .textFieldStyle(.roundedBorder)
 
                 // Voice
@@ -48,44 +42,45 @@ struct CustomPackView: View {
 
                 Divider()
 
-                // Clips
-                Text("Sons (\(clips.count))")
+                // Clips — just text fields, dead simple
+                Text("Phrases (\(clips.filter { !$0.text.isEmpty }.count))")
                     .font(.system(size: 14, weight: .semibold))
 
                 ForEach(clips.indices, id: \.self) { index in
                     HStack(spacing: 8) {
-                        Picker("", selection: $clips[index].trigger) {
-                            ForEach(0..<triggers.count, id: \.self) { i in
-                                Text(triggerLabels[i]).tag(triggers[i])
-                            }
-                        }
-                        .frame(width: 120)
+                        Text("\(index + 1).")
+                            .font(.caption)
+                            .foregroundColor(Color(hex: "8888AA"))
+                            .frame(width: 20)
 
-                        TextField("Texte à dire...", text: $clips[index].text)
+                        TextField("Ex: Aïe ! Mais t'es malade ?!", text: $clips[index].text)
                             .textFieldStyle(.roundedBorder)
 
-                        Button(action: { clips.remove(at: index) }) {
-                            Image(systemName: "minus.circle.fill")
-                                .foregroundColor(.red)
+                        if clips.count > 1 {
+                            Button(action: { clips.remove(at: index) }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(clips.count <= 1)
                     }
                 }
 
-                Button(action: { clips.append(CustomClipEntry(text: "", trigger: "slap")) }) {
-                    Label("Ajouter un son", systemImage: "plus.circle.fill")
-                        .font(.caption)
+                if clips.count < 5 {
+                    Button(action: { clips.append(CustomClipEntry(text: "")) }) {
+                        Label("Ajouter une phrase", systemImage: "plus.circle.fill")
+                            .font(.caption)
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
 
                 Divider()
 
-                // Generate button
+                // Generate
                 if isGenerating {
                     VStack(spacing: 8) {
-                        ProgressView(value: Double(progress), total: Double(clips.count))
-                        Text("Génération \(progress)/\(clips.count)...")
+                        ProgressView(value: Double(progress), total: Double(validClips.count))
+                        Text("Génération \(progress)/\(validClips.count)...")
                             .font(.caption)
                             .foregroundColor(Color(hex: "8888AA"))
                     }
@@ -103,28 +98,47 @@ struct CustomPackView: View {
                     .disabled(!canGenerate)
                 }
 
-                // Messages
                 if let error = errorMessage {
-                    Text(error)
-                        .font(.caption)
-                        .foregroundColor(.red)
+                    Text(error).font(.caption).foregroundColor(.red)
                 }
                 if let success = successMessage {
-                    Text(success)
-                        .font(.caption)
-                        .foregroundColor(.green)
+                    Text(success).font(.caption).foregroundColor(.green)
                 }
             }
             .padding(16)
         }
-        .frame(width: 420, height: 500)
+        .frame(width: 420, height: 480)
+    }
+
+    private var validClips: [CustomClipEntry] {
+        clips.filter { !$0.text.isEmpty }
     }
 
     private var canGenerate: Bool {
-        !apiKey.isEmpty && !packName.isEmpty && clips.allSatisfy { !$0.text.isEmpty }
+        !packName.isEmpty && !validClips.isEmpty
     }
 
     private func generatePack() {
+        guard appState.isLicensed else {
+            errorMessage = "Achète Maclaque pour créer des packs custom."
+            return
+        }
+
+        // Limit: 3 custom packs max
+        let customDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("Maclaque/CustomSounds", isDirectory: true)
+        let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customDir, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
+        guard existingPacks < 3 else {
+            errorMessage = "Maximum 3 packs custom atteint. Supprime un pack existant pour en créer un nouveau."
+            return
+        }
+
+        // Limit: max 5 phrases per pack
+        guard validClips.count <= 5 else {
+            errorMessage = "Maximum 5 phrases par pack."
+            return
+        }
+
         isGenerating = true
         progress = 0
         errorMessage = nil
@@ -135,6 +149,8 @@ struct CustomPackView: View {
             .replacingOccurrences(of: " ", with: "_")
             .filter { $0.isLetter || $0.isNumber || $0 == "_" }
 
+        let clipsToGenerate = validClips
+
         Task {
             do {
                 let customDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -142,21 +158,20 @@ struct CustomPackView: View {
 
                 var manifestClips: [[String: String]] = []
 
-                for (index, clip) in clips.enumerated() {
-                    let filename = "\(clip.trigger)_\(String(format: "%02d", index + 1)).mp3"
+                for (index, clip) in clipsToGenerate.enumerated() {
+                    let filename = "slap_\(String(format: "%02d", index + 1)).mp3"
 
                     _ = try await ElevenLabsService.shared.generateSpeech(
                         text: clip.text,
                         voiceId: voiceId,
-                        apiKey: apiKey,
+                        apiKey: Secrets.elevenLabsAPIKey,
                         saveTo: customDir,
                         filename: filename
                     )
 
                     manifestClips.append([
                         "file": filename,
-                        "intensity": "medium",
-                        "trigger": clip.trigger
+                        "intensity": "medium"
                     ])
 
                     await MainActor.run { progress = index + 1 }
@@ -176,13 +191,13 @@ struct CustomPackView: View {
 
                 await MainActor.run {
                     isGenerating = false
-                    successMessage = "Pack \"\(packName)\" créé avec \(clips.count) sons !"
+                    successMessage = "Pack \"\(packName)\" créé !"
                     appState.soundPackManager?.loadPacks()
                 }
             } catch {
                 await MainActor.run {
                     isGenerating = false
-                    errorMessage = error.localizedDescription
+                    errorMessage = "Erreur : \(error.localizedDescription)"
                 }
             }
         }
@@ -191,5 +206,4 @@ struct CustomPackView: View {
 
 struct CustomClipEntry {
     var text: String
-    var trigger: String
 }
