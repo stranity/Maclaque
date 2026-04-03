@@ -1,17 +1,18 @@
 import SwiftUI
 
-/// Simple view for creating custom sound packs — no API key needed, uses built-in key
+/// Simple view for creating custom sound packs with different triggers
 struct CustomPackView: View {
     @EnvironmentObject var appState: AppState
     @State private var packName = ""
     @State private var selectedVoiceIndex = 0
-    @State private var clips: [CustomClipEntry] = [
-        CustomClipEntry(text: ""),
-        CustomClipEntry(text: ""),
-        CustomClipEntry(text: ""),
-    ]
+    @State private var slapTexts: [String] = ["", "", ""]
+    @State private var chargePlugText = ""
+    @State private var chargeUnplugText = ""
+    @State private var lidOpenText = ""
+    @State private var lidCloseText = ""
     @State private var isGenerating = false
     @State private var progress = 0
+    @State private var totalToGenerate = 0
     @State private var errorMessage: String?
     @State private var successMessage: String?
 
@@ -19,74 +20,78 @@ struct CustomPackView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 14) {
                 Text("Crée ton pack")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(Color(hex: "FF2A1F"))
 
-                Text("Tape ce que ton Mac doit dire quand tu le gifles.\nMax 3 packs, 5 phrases chacun.")
+                Text("Max 3 packs, 5 sons de gifle + 4 événements.")
                     .font(.caption)
                     .foregroundColor(Color(hex: "8888AA"))
 
-                // Pack name
                 TextField("Nom du pack", text: $packName)
                     .textFieldStyle(.roundedBorder)
 
-                // Voice
                 Picker("Voix", selection: $selectedVoiceIndex) {
                     ForEach(0..<voices.count, id: \.self) { i in
-                        Text("\(voices[i].name) — \(voices[i].description)")
-                            .tag(i)
+                        Text("\(voices[i].name) — \(voices[i].description)").tag(i)
                     }
                 }
 
                 Divider()
 
-                // Clips — just text fields, dead simple
-                Text("Phrases (\(clips.filter { !$0.text.isEmpty }.count))")
-                    .font(.system(size: 14, weight: .semibold))
-
-                ForEach(clips.indices, id: \.self) { index in
-                    HStack(spacing: 8) {
-                        Text("\(index + 1).")
-                            .font(.caption)
-                            .foregroundColor(Color(hex: "8888AA"))
-                            .frame(width: 20)
-
-                        TextField("Ex: Aïe ! Mais t'es malade ?!", text: $clips[index].text)
+                // ── Gifles ──
+                sectionHeader("Gifles", icon: "hand.raised.fill", count: slapTexts.filter { !$0.isEmpty }.count, max: 5)
+                ForEach(slapTexts.indices, id: \.self) { i in
+                    HStack(spacing: 6) {
+                        Text("\(i+1).")
+                            .font(.caption).foregroundColor(Color(hex: "8888AA")).frame(width: 16)
+                        TextField("Ex: Aïe ! Mais arrête !", text: $slapTexts[i])
                             .textFieldStyle(.roundedBorder)
-
-                        if clips.count > 1 {
-                            Button(action: { clips.remove(at: index) }) {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundColor(.red)
-                            }
-                            .buttonStyle(.plain)
+                        if slapTexts.count > 1 {
+                            Button(action: { slapTexts.remove(at: i) }) {
+                                Image(systemName: "minus.circle.fill").foregroundColor(.red)
+                            }.buttonStyle(.plain)
                         }
                     }
                 }
-
-                if clips.count < 5 {
-                    Button(action: { clips.append(CustomClipEntry(text: "")) }) {
-                        Label("Ajouter une phrase", systemImage: "plus.circle.fill")
-                            .font(.caption)
-                    }
-                    .buttonStyle(.plain)
+                if slapTexts.count < 5 {
+                    Button(action: { slapTexts.append("") }) {
+                        Label("Ajouter", systemImage: "plus.circle.fill").font(.caption)
+                    }.buttonStyle(.plain)
                 }
 
                 Divider()
 
-                // Generate
+                // ── Événements ──
+                sectionHeader("Branchement", icon: "bolt.fill", count: chargePlugText.isEmpty ? 0 : 1, max: 1)
+                TextField("Ex: Mmh enfin du jus !", text: $chargePlugText)
+                    .textFieldStyle(.roundedBorder)
+
+                sectionHeader("Débranchement", icon: "bolt.slash.fill", count: chargeUnplugText.isEmpty ? 0 : 1, max: 1)
+                TextField("Ex: Hé ! Remets ça !", text: $chargeUnplugText)
+                    .textFieldStyle(.roundedBorder)
+
+                sectionHeader("Ouverture couvercle", icon: "laptopcomputer", count: lidOpenText.isEmpty ? 0 : 1, max: 1)
+                TextField("Ex: Oh non, encore toi...", text: $lidOpenText)
+                    .textFieldStyle(.roundedBorder)
+
+                sectionHeader("Fermeture couvercle", icon: "laptopcomputer.slash", count: lidCloseText.isEmpty ? 0 : 1, max: 1)
+                TextField("Ex: Bonne nuit...", text: $lidCloseText)
+                    .textFieldStyle(.roundedBorder)
+
+                Divider()
+
+                // ── Générer ──
                 if isGenerating {
                     VStack(spacing: 8) {
-                        ProgressView(value: Double(progress), total: Double(validClips.count))
-                        Text("Génération \(progress)/\(validClips.count)...")
-                            .font(.caption)
-                            .foregroundColor(Color(hex: "8888AA"))
+                        ProgressView(value: Double(progress), total: Double(totalToGenerate))
+                        Text("Génération \(progress)/\(totalToGenerate)...")
+                            .font(.caption).foregroundColor(Color(hex: "8888AA"))
                     }
                 } else {
                     Button(action: generatePack) {
-                        Text("Générer le pack")
+                        Text("Générer le pack (\(allClips.count) sons)")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
@@ -107,15 +112,35 @@ struct CustomPackView: View {
             }
             .padding(16)
         }
-        .frame(width: 420, height: 480)
+        .frame(width: 420, height: 520)
     }
 
-    private var validClips: [CustomClipEntry] {
-        clips.filter { !$0.text.isEmpty }
+    private func sectionHeader(_ title: String, icon: String, count: Int, max: Int) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(Color(hex: "FFD60A"))
+                .frame(width: 16)
+            Text(title)
+                .font(.system(size: 13, weight: .semibold))
+            Spacer()
+            Text("\(count)/\(max)")
+                .font(.caption)
+                .foregroundColor(Color(hex: "8888AA"))
+        }
+    }
+
+    private var allClips: [(text: String, trigger: String)] {
+        var clips: [(String, String)] = []
+        for t in slapTexts where !t.isEmpty { clips.append((t, "slap")) }
+        if !chargePlugText.isEmpty { clips.append((chargePlugText, "charge_plug")) }
+        if !chargeUnplugText.isEmpty { clips.append((chargeUnplugText, "charge_unplug")) }
+        if !lidOpenText.isEmpty { clips.append((lidOpenText, "lid_open")) }
+        if !lidCloseText.isEmpty { clips.append((lidCloseText, "lid_close")) }
+        return clips
     }
 
     private var canGenerate: Bool {
-        !packName.isEmpty && !validClips.isEmpty
+        !packName.isEmpty && !allClips.isEmpty
     }
 
     private func generatePack() {
@@ -124,23 +149,18 @@ struct CustomPackView: View {
             return
         }
 
-        // Limit: 3 custom packs max
-        let customDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let customBase = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             .appendingPathComponent("Maclaque/CustomSounds", isDirectory: true)
-        let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customDir, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
+        let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customBase, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
         guard existingPacks < 3 else {
-            errorMessage = "Maximum 3 packs custom atteint. Supprime un pack existant pour en créer un nouveau."
+            errorMessage = "Maximum 3 packs custom. Supprime-en un dans ~/Library/Application Support/Maclaque/CustomSounds/"
             return
         }
 
-        // Limit: max 5 phrases per pack
-        guard validClips.count <= 5 else {
-            errorMessage = "Maximum 5 phrases par pack."
-            return
-        }
-
+        let clips = allClips
         isGenerating = true
         progress = 0
+        totalToGenerate = clips.count
         errorMessage = nil
         successMessage = nil
 
@@ -149,35 +169,31 @@ struct CustomPackView: View {
             .replacingOccurrences(of: " ", with: "_")
             .filter { $0.isLetter || $0.isNumber || $0 == "_" }
 
-        let clipsToGenerate = validClips
-
         Task {
             do {
-                let customDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-                    .appendingPathComponent("Maclaque/CustomSounds/\(packId)", isDirectory: true)
-
+                let packDir = customBase.appendingPathComponent(packId, isDirectory: true)
                 var manifestClips: [[String: String]] = []
 
-                for (index, clip) in clipsToGenerate.enumerated() {
-                    let filename = "slap_\(String(format: "%02d", index + 1)).mp3"
+                for (index, clip) in clips.enumerated() {
+                    let filename = "\(clip.trigger)_\(String(format: "%02d", index + 1)).mp3"
 
                     _ = try await ElevenLabsService.shared.generateSpeech(
                         text: clip.text,
                         voiceId: voiceId,
                         apiKey: Secrets.elevenLabsAPIKey,
-                        saveTo: customDir,
+                        saveTo: packDir,
                         filename: filename
                     )
 
                     manifestClips.append([
                         "file": filename,
-                        "intensity": "medium"
+                        "intensity": "medium",
+                        "trigger": clip.trigger
                     ])
 
                     await MainActor.run { progress = index + 1 }
                 }
 
-                // Write pack.json
                 let manifest: [String: Any] = [
                     "id": packId,
                     "name": packName,
@@ -187,11 +203,11 @@ struct CustomPackView: View {
                     "clips": manifestClips
                 ]
                 let jsonData = try JSONSerialization.data(withJSONObject: manifest, options: .prettyPrinted)
-                try jsonData.write(to: customDir.appendingPathComponent("pack.json"))
+                try jsonData.write(to: packDir.appendingPathComponent("pack.json"))
 
                 await MainActor.run {
                     isGenerating = false
-                    successMessage = "Pack \"\(packName)\" créé !"
+                    successMessage = "Pack \"\(packName)\" créé avec \(clips.count) sons !"
                     appState.soundPackManager?.loadPacks()
                 }
             } catch {
