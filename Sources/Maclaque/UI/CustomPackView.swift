@@ -138,11 +138,25 @@ struct CustomPackView: View {
             return
         }
 
+        // Total generations limit (protects API costs)
+        let totalGens = UserDefaults.standard.integer(forKey: "maclaque.totalGenerations")
+        let maxTotalGens = 15  // 3 packs × 5 phrases max
+        guard totalGens < maxTotalGens else {
+            errorMessage = "Tu as atteint la limite de \(maxTotalGens) sons générés. Merci d'utiliser Maclaque !"
+            return
+        }
+
         let customBase = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             .appendingPathComponent("Maclaque/CustomSounds", isDirectory: true)
         let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customBase, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
         guard existingPacks < 3 else {
-            errorMessage = "Maximum 3 packs custom. Supprime-en un dans ~/Library/Application Support/Maclaque/CustomSounds/"
+            errorMessage = "Maximum 3 packs custom. Supprime-en un pour en créer un nouveau."
+            return
+        }
+
+        let remaining = maxTotalGens - totalGens
+        guard allClips.count <= remaining else {
+            errorMessage = "Il te reste \(remaining) générations. Réduis le nombre de phrases."
             return
         }
 
@@ -179,6 +193,9 @@ struct CustomPackView: View {
                         "intensity": "medium",
                         "trigger": clip.trigger
                     ])
+
+                    // Increment generation counter
+                    UserDefaults.standard.set(totalGens + index + 1, forKey: "maclaque.totalGenerations")
 
                     await MainActor.run { progress = index + 1 }
                 }
