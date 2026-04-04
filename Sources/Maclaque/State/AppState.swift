@@ -138,10 +138,6 @@ final class AppState: ObservableObject {
             let usbIntensity: Float = (event.action == "plug") ? 0.6 : 0.4
             soundPackManager?.playForEvent(trigger: trigger, intensity: usbIntensity)
 
-        case "lid":
-            let trigger = (event.action == "closed") ? "lid_close" : "lid_open"
-            soundPackManager?.playForEvent(trigger: trigger, intensity: 0.5)
-
         default:
             break
         }

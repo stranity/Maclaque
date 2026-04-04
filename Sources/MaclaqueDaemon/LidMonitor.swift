@@ -36,11 +36,8 @@ final class LidMonitor {
             return
         }
 
-        CFRunLoopAddSource(
-            CFRunLoopGetMain(),
-            IONotificationPortGetRunLoopSource(port).takeUnretainedValue(),
-            .defaultMode
-        )
+        // Use dispatch queue instead of CFRunLoop (daemon uses dispatchMain())
+        IONotificationPortSetDispatchQueue(port, DispatchQueue.main)
 
         print("[LidMonitor] Sleep/wake monitor started ✓")
     }

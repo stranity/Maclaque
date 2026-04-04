@@ -8,8 +8,6 @@ struct CustomPackView: View {
     @State private var slapTexts: [String] = ["", "", ""]
     @State private var chargePlugText = ""
     @State private var chargeUnplugText = ""
-    @State private var lidOpenText = ""
-    @State private var lidCloseText = ""
     @State private var isGenerating = false
     @State private var progress = 0
     @State private var totalToGenerate = 0
@@ -72,13 +70,6 @@ struct CustomPackView: View {
                 TextField("Ex: Hé ! Remets ça !", text: $chargeUnplugText)
                     .textFieldStyle(.roundedBorder)
 
-                sectionHeader("Ouverture couvercle", icon: "laptopcomputer", count: lidOpenText.isEmpty ? 0 : 1, max: 1)
-                TextField("Ex: Oh non, encore toi...", text: $lidOpenText)
-                    .textFieldStyle(.roundedBorder)
-
-                sectionHeader("Fermeture couvercle", icon: "laptopcomputer.slash", count: lidCloseText.isEmpty ? 0 : 1, max: 1)
-                TextField("Ex: Bonne nuit...", text: $lidCloseText)
-                    .textFieldStyle(.roundedBorder)
 
                 Divider()
 
@@ -134,8 +125,6 @@ struct CustomPackView: View {
         for t in slapTexts where !t.isEmpty { clips.append((t, "slap")) }
         if !chargePlugText.isEmpty { clips.append((chargePlugText, "charge_plug")) }
         if !chargeUnplugText.isEmpty { clips.append((chargeUnplugText, "charge_unplug")) }
-        if !lidOpenText.isEmpty { clips.append((lidOpenText, "lid_open")) }
-        if !lidCloseText.isEmpty { clips.append((lidCloseText, "lid_close")) }
         return clips
     }
 
