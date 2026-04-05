@@ -5,3 +5,4 @@ dist/
 .DS_Store
 ._*
 Secrets.swift
+proxy/node_modules/

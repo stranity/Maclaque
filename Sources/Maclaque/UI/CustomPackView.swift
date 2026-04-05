@@ -138,11 +138,8 @@ struct CustomPackView: View {
             return
         }
 
-        // Total generations limit (protects API costs)
-        let totalGens = UserDefaults.standard.integer(forKey: "maclaque.totalGenerations")
-        let maxTotalGens = 15  // 3 packs × 5 phrases max
-        guard totalGens < maxTotalGens else {
-            errorMessage = "Tu as atteint la limite de \(maxTotalGens) sons générés. Merci d'utiliser Maclaque !"
+        guard let licenseKey = appState.currentLicenseKey, !licenseKey.isEmpty else {
+            errorMessage = "Licence introuvable. Réactive ta licence."
             return
         }
 
@@ -151,12 +148,6 @@ struct CustomPackView: View {
         let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customBase, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
         guard existingPacks < 3 else {
             errorMessage = "Maximum 3 packs custom. Supprime-en un pour en créer un nouveau."
-            return
-        }
-
-        let remaining = maxTotalGens - totalGens
-        guard allClips.count <= remaining else {
-            errorMessage = "Il te reste \(remaining) générations. Réduis le nombre de phrases."
             return
         }
 
@@ -183,7 +174,7 @@ struct CustomPackView: View {
                     _ = try await ElevenLabsService.shared.generateSpeech(
                         text: clip.text,
                         voiceId: voiceId,
-                        apiKey: Secrets.elevenLabsAPIKey,
+                        licenseKey: licenseKey,
                         saveTo: packDir,
                         filename: filename
                     )
@@ -193,9 +184,6 @@ struct CustomPackView: View {
                         "intensity": "medium",
                         "trigger": clip.trigger
                     ])
-
-                    // Increment generation counter
-                    UserDefaults.standard.set(totalGens + index + 1, forKey: "maclaque.totalGenerations")
 
                     await MainActor.run { progress = index + 1 }
                 }
@@ -215,6 +203,11 @@ struct CustomPackView: View {
                     isGenerating = false
                     successMessage = "Pack \"\(packName)\" créé avec \(clips.count) sons !"
                     appState.soundPackManager?.loadPacks()
+                }
+            } catch let error as ElevenLabsError {
+                await MainActor.run {
+                    isGenerating = false
+                    errorMessage = error.localizedDescription
                 }
             } catch {
                 await MainActor.run {

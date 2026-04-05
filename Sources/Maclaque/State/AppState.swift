@@ -67,6 +67,10 @@ final class AppState: ObservableObject {
     private var socketClient: SocketClient?
     private let licenseManager = LicenseManager()
 
+    var currentLicenseKey: String? {
+        licenseManager.storedLicenseKey
+    }
+
     init() {
         let prefs = Preferences.shared
         self.isActive = prefs.isActive

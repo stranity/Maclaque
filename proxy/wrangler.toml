@@ -1,0 +1,11 @@
+name = "maclaque-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Route: api.maclaque.shop/*
+# Configure via Cloudflare dashboard or:
+# routes = [{ pattern = "api.maclaque.shop/*", zone_name = "maclaque.shop" }]
+
+[[kv_namespaces]]
+binding = "KV"
+id = "863634678b764e0b88d800b7724387b5"
