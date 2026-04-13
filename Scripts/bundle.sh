@@ -4,15 +4,21 @@ set -euo pipefail
 # ═══════════════════════════════════════════════════════════════════════
 # bundle.sh — Build, sign, and package Maclaque.app + MaclaqueDaemon
 # Usage: ./Scripts/bundle.sh
+#
+# NOTE: All bundling, signing, and DMG creation happens in /tmp (APFS)
+# to avoid exFAT filesystem issues with code signatures.
 # ═══════════════════════════════════════════════════════════════════════
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/.build/release"
 APP_NAME="Maclaque"
-APP_BUNDLE="$PROJECT_DIR/dist/$APP_NAME.app"
 DMG_NAME="$APP_NAME-v1.0.dmg"
 DMG_PATH="$PROJECT_DIR/dist/$DMG_NAME"
+
+# Work in /tmp (APFS) to preserve code signatures
+WORK_DIR="/tmp/maclaque_build"
+APP_BUNDLE="$WORK_DIR/$APP_NAME.app"
 
 # ── Config (set via environment or edit here) ───────────────────────────
 DEVELOPER_ID_CERT="${DEVELOPER_ID_CERT_NAME:-Developer ID Application}"
@@ -30,10 +36,10 @@ swift build -c release 2>&1
 
 echo "✓ Build succeeded"
 
-# ── Step 2: Create .app bundle ──────────────────────────────────────────
+# ── Step 2: Create .app bundle (in /tmp for APFS) ──────────────────────
 echo ""
 echo "▸ Creating app bundle..."
-rm -rf "$APP_BUNDLE"
+rm -rf "$WORK_DIR"
 mkdir -p "$APP_BUNDLE/Contents/MacOS"
 mkdir -p "$APP_BUNDLE/Contents/Resources/Packs"
 mkdir -p "$APP_BUNDLE/Contents/Library/LaunchDaemons"
@@ -87,14 +93,17 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << 'PLIST'
 </plist>
 PLIST
 
+# Remove exFAT resource fork files (._*) that break code signatures
+find "$APP_BUNDLE" -name "._*" -delete
+
 echo "✓ App bundle created"
 
 # ── Step 3: Code signing ────────────────────────────────────────────────
 echo ""
 echo "▸ Code signing..."
 if [ -n "$TEAM_ID" ]; then
-    # Create production entitlements (no get-task-allow)
-    cat > "$PROJECT_DIR/dist/app.entitlements" << 'ENT'
+    # Create production entitlements
+    cat > "$WORK_DIR/app.entitlements" << 'ENT'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -104,7 +113,7 @@ if [ -n "$TEAM_ID" ]; then
 </dict>
 </plist>
 ENT
-    cat > "$PROJECT_DIR/dist/daemon.entitlements" << 'ENT'
+    cat > "$WORK_DIR/daemon.entitlements" << 'ENT'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -119,16 +128,16 @@ ENT
     codesign --force --sign "$DEVELOPER_ID_CERT" \
         --options runtime \
         --timestamp \
-        --entitlements "$PROJECT_DIR/dist/daemon.entitlements" \
+        --entitlements "$WORK_DIR/daemon.entitlements" \
         "$APP_BUNDLE/Contents/MacOS/MaclaqueDaemon"
 
     codesign --force --sign "$DEVELOPER_ID_CERT" \
         --options runtime \
         --timestamp \
-        --entitlements "$PROJECT_DIR/dist/app.entitlements" \
+        --entitlements "$WORK_DIR/app.entitlements" \
         "$APP_BUNDLE"
 
-    rm -f "$PROJECT_DIR/dist/app.entitlements" "$PROJECT_DIR/dist/daemon.entitlements"
+    rm -f "$WORK_DIR/app.entitlements" "$WORK_DIR/daemon.entitlements"
     echo "✓ Code signed with: $DEVELOPER_ID_CERT"
 else
     echo "⚠ APPLE_DEVELOPER_TEAM_ID not set — skipping code signing"
@@ -138,12 +147,10 @@ fi
 # ── Step 4: Create DMG ──────────────────────────────────────────────────
 echo ""
 echo "▸ Creating DMG..."
-rm -f "$DMG_PATH"
 mkdir -p "$PROJECT_DIR/dist"
+rm -f "$DMG_PATH"
 
-# Create a temporary DMG folder
-DMG_TEMP="$PROJECT_DIR/dist/dmg_temp"
-rm -rf "$DMG_TEMP"
+DMG_TEMP="$WORK_DIR/dmg_temp"
 mkdir -p "$DMG_TEMP"
 cp -R "$APP_BUNDLE" "$DMG_TEMP/"
 ln -s /Applications "$DMG_TEMP/Applications"
@@ -151,9 +158,12 @@ ln -s /Applications "$DMG_TEMP/Applications"
 hdiutil create -volname "$APP_NAME" \
     -srcfolder "$DMG_TEMP" \
     -ov -format UDZO \
+    -fs HFS+ \
     "$DMG_PATH" 2>/dev/null
 
-rm -rf "$DMG_TEMP"
+# Also keep a copy of the .app in dist
+rm -rf "$PROJECT_DIR/dist/$APP_NAME.app"
+cp -R "$APP_BUNDLE" "$PROJECT_DIR/dist/"
 
 # Sign the DMG itself (required for notarization to pass spctl)
 if [ -n "$TEAM_ID" ]; then
@@ -162,6 +172,9 @@ if [ -n "$TEAM_ID" ]; then
 else
     echo "✓ DMG created (unsigned): $DMG_PATH"
 fi
+
+# Cleanup
+rm -rf "$WORK_DIR"
 
 # ── Done ────────────────────────────────────────────────────────────────
 echo ""
