@@ -48,6 +48,7 @@ cp "$BUILD_DIR/MaclaqueDaemon" "$APP_BUNDLE/Contents/MacOS/MaclaqueDaemon"
 
 # Copy resources
 cp -R "$PROJECT_DIR/Resources/Packs/"* "$APP_BUNDLE/Contents/Resources/Packs/" 2>/dev/null || true
+cp "$PROJECT_DIR/Resources/AppIcon.icns" "$APP_BUNDLE/Contents/Resources/AppIcon.icns" 2>/dev/null || true
 
 # Copy daemon plist
 cp "$PROJECT_DIR/Daemon/com.maclaque.daemon.plist" "$APP_BUNDLE/Contents/Library/LaunchDaemons/"
@@ -70,6 +71,8 @@ cat > "$APP_BUNDLE/Contents/Info.plist" << 'PLIST'
     <string>1.0.0</string>
     <key>CFBundleExecutable</key>
     <string>Maclaque</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>LSMinimumSystemVersion</key>
@@ -152,7 +155,13 @@ hdiutil create -volname "$APP_NAME" \
 
 rm -rf "$DMG_TEMP"
 
-echo "✓ DMG created: $DMG_PATH"
+# Sign the DMG itself (required for notarization to pass spctl)
+if [ -n "$TEAM_ID" ]; then
+    codesign --force --sign "$DEVELOPER_ID_CERT" --timestamp "$DMG_PATH"
+    echo "✓ DMG created and signed: $DMG_PATH"
+else
+    echo "✓ DMG created (unsigned): $DMG_PATH"
+fi
 
 # ── Done ────────────────────────────────────────────────────────────────
 echo ""

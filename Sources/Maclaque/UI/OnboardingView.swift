@@ -178,62 +178,60 @@ struct OnboardingView: View {
     // ── Step 3: Activate ───────────────────────────────────────────────
     private var activateStep: some View {
         VStack(spacing: 20) {
-            if appState.isLicensed || appState.freeSlapsRemaining > 0 {
-                Text("🎉")
-                    .font(.system(size: 64))
+            Text("🎉")
+                .font(.system(size: 64))
 
-                Text(appState.isLicensed ? "C'est parti !" : "3 gifles offertes !")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(textHigh)
+            Text(appState.isLicensed ? "C'est parti !" : "\(Constants.maxFreeSlaps) gifles offertes !")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundColor(textHigh)
 
-                Text(appState.isLicensed
-                     ? "Maclaque est activé. Giflez sans limite."
-                     : "Essaie Maclaque maintenant.\nSi t'aimes, c'est 4,99€ pour la vie.")
-                    .font(.system(size: 14))
-                    .foregroundColor(textLow)
-                    .multilineTextAlignment(.center)
+            Text(appState.isLicensed
+                 ? "Maclaque est activé. Giflez sans limite."
+                 : "Essaie Maclaque maintenant.\nSi t'aimes, c'est 4,99€ pour la vie.")
+                .font(.system(size: 14))
+                .foregroundColor(textLow)
+                .multilineTextAlignment(.center)
 
-                if !appState.isLicensed {
-                    Link(destination: URL(string: Constants.lemonSqueezyCheckoutURL)!) {
-                        Text("Acheter 4,99€")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.black)
-                            .frame(maxWidth: 200)
-                            .padding(.vertical, 12)
-                            .background(accentColor)
-                            .cornerRadius(12)
-                    }
-
-                    HStack {
-                        TextField("Ou entrer une clé de licence", text: $licenseKeyInput)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(maxWidth: 240)
-
-                        Button("Activer") {
-                            validateLicense()
-                        }
-                        .disabled(licenseKeyInput.isEmpty || isValidating)
-                    }
-                    .padding(.horizontal, 40)
-
-                    if licenseError {
-                        Text("Clé invalide")
-                            .foregroundColor(.red)
-                            .font(.caption)
-                    }
-                }
-
-                Button(action: finishOnboarding) {
-                    Text(appState.isLicensed ? "Commencer" : "Essayer gratuitement")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.white)
+            if !appState.isLicensed {
+                Link(destination: URL(string: Constants.lemonSqueezyCheckoutURL)!) {
+                    Text("Acheter 4,99€")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.black)
                         .frame(maxWidth: 200)
-                        .padding(.vertical, 10)
-                        .background(primaryColor)
-                        .cornerRadius(10)
+                        .padding(.vertical, 12)
+                        .background(accentColor)
+                        .cornerRadius(12)
                 }
-                .buttonStyle(.plain)
+
+                HStack {
+                    TextField("Ou entrer une clé de licence", text: $licenseKeyInput)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(maxWidth: 240)
+
+                    Button("Activer") {
+                        validateLicense()
+                    }
+                    .disabled(licenseKeyInput.isEmpty || isValidating)
+                }
+                .padding(.horizontal, 40)
+
+                if licenseError {
+                    Text("Clé invalide")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                }
             }
+
+            Button(action: finishOnboarding) {
+                Text(appState.isLicensed ? "Commencer" : "Essayer gratuitement")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: 200)
+                    .padding(.vertical, 10)
+                    .background(primaryColor)
+                    .cornerRadius(10)
+            }
+            .buttonStyle(.plain)
         }
     }
 

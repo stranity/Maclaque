@@ -702,10 +702,11 @@
         <div class="step">
             <div class="step-number">2</div>
             <h3>Autorisez l'app</h3>
-            <p>macOS bloque l'app au premier lancement. Pas de panique :<br>
-            <strong>R&eacute;glages Syst&egrave;me &rarr; Confidentialit&eacute; et s&eacute;curit&eacute;</strong><br>
-            Scrollez en bas, vous verrez <em>&laquo; Maclaque a &eacute;t&eacute; bloqu&eacute; &raquo;</em>.<br>
-            Cliquez <strong>&laquo; Ouvrir quand m&ecirc;me &raquo;</strong>.</p>
+            <p>macOS peut afficher <em>&laquo; endommagé &raquo;</em> ou <em>&laquo; bloqué &raquo;</em> &mdash; c'est normal pour les apps hors App Store. Deux options :</p>
+            <p><strong>Option A :</strong> Ouvrez <strong>Terminal</strong> et tapez :<br>
+            <code style="background:#1a1a2e;padding:6px 12px;border-radius:6px;display:inline-block;margin-top:4px;">xattr -cr /Applications/Maclaque.app</code><br>
+            Puis relancez l'app.</p>
+            <p><strong>Option B :</strong> Allez dans <strong>R&eacute;glages Syst&egrave;me &rarr; Confidentialit&eacute; et s&eacute;curit&eacute;</strong>, scrollez en bas et cliquez <strong>&laquo; Ouvrir quand m&ecirc;me &raquo;</strong>.</p>
         </div>
         <div class="step">
             <div class="step-number">3</div>
