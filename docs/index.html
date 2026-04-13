@@ -548,7 +548,7 @@
 <!-- Hero -->
 <section class="hero">
     <div class="hero-badge">Nouveau &mdash; 100% Fran&ccedil;ais</div>
-    <img src="logo.png" alt="Maclaque" style="width:160px;height:160px;border-radius:32px;margin-bottom:8px;box-shadow:0 8px 32px rgba(255,42,31,0.3);">
+    <div class="hero-emoji">&nbsp;&#x1F44B;</div>
     <h1>Gifle ton Mac.<br><span>Il te r&eacute;pond en fran&ccedil;ais.</span></h1>
     <p class="hero-tagline">&laquo; Putain mais t'es fou ?! &raquo; &mdash; Ton MacBook, probablement.</p>
     <a href="#pricing" class="hero-cta">
@@ -692,7 +692,7 @@
 <!-- Installation -->
 <section id="installation">
     <h2 class="section-title">Installation <span>en 2 min</span></h2>
-    <p class="section-subtitle">L'app n'est pas sur l'App Store (acc&egrave;s capteur impossible en sandbox). macOS affiche un avertissement &mdash; c'est normal, voici comment faire.</p>
+    <p class="section-subtitle">L'app est sign&eacute;e et notaris&eacute;e par Apple. Installation simple, comme n'importe quelle app Mac.</p>
     <div class="steps">
         <div class="step">
             <div class="step-number">1</div>
@@ -701,17 +701,13 @@
         </div>
         <div class="step">
             <div class="step-number">2</div>
-            <h3>Autorisez l'app</h3>
-            <p>macOS peut afficher <em>&laquo; endommagé &raquo;</em> ou <em>&laquo; bloqué &raquo;</em> &mdash; c'est normal pour les apps hors App Store. Deux options :</p>
-            <p><strong>Option A :</strong> Ouvrez <strong>Terminal</strong> et tapez :<br>
-            <code style="background:#1a1a2e;padding:6px 12px;border-radius:6px;display:inline-block;margin-top:4px;">xattr -cr /Applications/Maclaque.app</code><br>
-            Puis relancez l'app.</p>
-            <p><strong>Option B :</strong> Allez dans <strong>R&eacute;glages Syst&egrave;me &rarr; Confidentialit&eacute; et s&eacute;curit&eacute;</strong>, scrollez en bas et cliquez <strong>&laquo; Ouvrir quand m&ecirc;me &raquo;</strong>.</p>
+            <h3>Lancez l'app</h3>
+            <p>Ouvrez Maclaque depuis Applications. L'app vous guide pour installer le daemon &mdash; entrez votre mot de passe Mac une seule fois.</p>
         </div>
         <div class="step">
             <div class="step-number">3</div>
-            <h3>Installez le daemon</h3>
-            <p>L'app vous guide : cliquez "Installer", entrez votre mot de passe Mac. C'est fait &mdash; giflez !</p>
+            <h3>Giflez !</h3>
+            <p>C'est tout. Votre Mac r&eacute;agit d&egrave;s la premi&egrave;re gifle. 5 essais gratuits pour tester.</p>
         </div>
     </div>
 </section>
@@ -762,8 +758,8 @@
             <div class="faq-question">Pourquoi pas sur l'App Store ?</div>
             <div class="faq-answer">
                 L'App Store ne permet pas aux apps d'acc&eacute;der &agrave; l'acc&eacute;l&eacute;rom&egrave;tre via IOKit (sandbox trop restrictive).
-                La distribution directe est la seule option technique. macOS affichera un avertissement au premier lancement &mdash;
-                allez dans R&eacute;glages Syst&egrave;me &rarr; Confidentialit&eacute; et s&eacute;curit&eacute; &rarr; "Ouvrir quand m&ecirc;me".
+                La distribution directe est la seule option technique. L'app est sign&eacute;e et notaris&eacute;e par Apple &mdash;
+                elle s'installe comme n'importe quelle app Mac.
             </div>
         </div>
     </div>
