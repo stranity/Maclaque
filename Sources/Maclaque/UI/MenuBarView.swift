@@ -8,6 +8,33 @@ struct MenuBarView: View {
     private let textColor = Color.primary
 
     var body: some View {
+        if showCustomPack {
+            // Custom pack creation view (inline)
+            VStack(spacing: 0) {
+                HStack {
+                    Button(action: { withAnimation { showCustomPack = false } }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                            Text("Retour")
+                        }
+                        .font(.system(size: 12, weight: .medium))
+                    }
+                    .buttonStyle(.plain)
+                    Spacer()
+                }
+                .padding(.bottom, 8)
+
+                CustomPackView()
+                    .environmentObject(appState)
+            }
+            .padding(16)
+            .frame(width: 420)
+        } else {
+            mainView
+        }
+    }
+
+    private var mainView: some View {
         VStack(spacing: 16) {
             // Header
             HStack {
@@ -46,7 +73,7 @@ struct MenuBarView: View {
                 PackPickerView()
                     .environmentObject(appState)
 
-                Button(action: { showCustomPack = true }) {
+                Button(action: { withAnimation { showCustomPack = true } }) {
                     HStack(spacing: 6) {
                         Image(systemName: "plus.circle.fill")
                             .foregroundColor(Color(hex: "FFD60A"))
@@ -56,10 +83,6 @@ struct MenuBarView: View {
                     .padding(.top, 4)
                 }
                 .buttonStyle(.plain)
-                .sheet(isPresented: $showCustomPack) {
-                    CustomPackView()
-                        .environmentObject(appState)
-                }
             }
 
             Divider()
