@@ -192,6 +192,19 @@ struct OnboardingView: View {
                 .foregroundColor(textLow)
                 .multilineTextAlignment(.center)
 
+            HStack(spacing: 8) {
+                Image(systemName: "menubar.arrow.up.rectangle")
+                    .foregroundColor(accentColor)
+                    .font(.system(size: 16))
+                Text("Maclaque vit dans ta barre de menu\nen haut à droite de l'écran.")
+                    .font(.system(size: 12))
+                    .foregroundColor(textLow)
+                    .multilineTextAlignment(.leading)
+            }
+            .padding(12)
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(10)
+
             if !appState.isLicensed {
                 Link(destination: URL(string: Constants.lemonSqueezyCheckoutURL)!) {
                     Text("Acheter 4,99€")

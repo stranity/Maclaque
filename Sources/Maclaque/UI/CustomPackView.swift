@@ -3,6 +3,7 @@ import SwiftUI
 /// Simple view for creating custom sound packs with different triggers
 struct CustomPackView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.dismiss) private var dismiss
     @State private var packName = ""
     @State private var selectedVoiceIndex = 0
     @State private var slapTexts: [String] = ["", "", ""]
@@ -19,9 +20,18 @@ struct CustomPackView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Crée ton pack")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(Color(hex: "FF2A1F"))
+                HStack {
+                    Text("Crée ton pack")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundColor(Color(hex: "FF2A1F"))
+                    Spacer()
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
 
                 Text("Max 3 packs, 5 sons de gifle + 4 événements.")
                     .font(.caption)
@@ -35,6 +45,7 @@ struct CustomPackView: View {
                         Text("\(voices[i].name) — \(voices[i].description)").tag(i)
                     }
                 }
+                .pickerStyle(.menu)
 
                 Divider()
 
