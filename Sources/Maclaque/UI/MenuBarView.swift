@@ -2,6 +2,10 @@ import SwiftUI
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
+    @State private var showCustomPack = false
+
+    private let labelColor = Color.primary.opacity(0.55)
+    private let textColor = Color.primary
 
     var body: some View {
         VStack(spacing: 16) {
@@ -37,10 +41,25 @@ struct MenuBarView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Pack de sons")
                     .font(.caption)
-                    .foregroundColor(Color(hex: "8888AA"))
+                    .foregroundColor(labelColor)
 
                 PackPickerView()
                     .environmentObject(appState)
+
+                Button(action: { showCustomPack = true }) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundColor(Color(hex: "FFD60A"))
+                        Text("Créer un pack personnalisé")
+                            .font(.system(size: 11, weight: .medium))
+                    }
+                    .padding(.top, 4)
+                }
+                .buttonStyle(.plain)
+                .sheet(isPresented: $showCustomPack) {
+                    CustomPackView()
+                        .environmentObject(appState)
+                }
             }
 
             Divider()
@@ -50,11 +69,11 @@ struct MenuBarView: View {
                 HStack {
                     Text("Sensibilité")
                         .font(.caption)
-                        .foregroundColor(Color(hex: "8888AA"))
+                        .foregroundColor(labelColor)
                     Spacer()
                     Text("\(Int(appState.sensitivity))")
                         .font(.caption)
-                        .foregroundColor(Color(hex: "F0F0F5"))
+                        .foregroundColor(textColor)
                 }
                 Slider(value: $appState.sensitivity, in: 1...10, step: 1)
                     .tint(Color(hex: "FF2A1F"))
@@ -65,11 +84,11 @@ struct MenuBarView: View {
                 HStack {
                     Text("Volume")
                         .font(.caption)
-                        .foregroundColor(Color(hex: "8888AA"))
+                        .foregroundColor(labelColor)
                     Spacer()
                     Text("\(Int(appState.masterVolume * 100))%")
                         .font(.caption)
-                        .foregroundColor(Color(hex: "F0F0F5"))
+                        .foregroundColor(textColor)
                 }
                 Slider(value: $appState.masterVolume, in: 0...1)
                     .tint(Color(hex: "FF2A1F"))
@@ -83,7 +102,7 @@ struct MenuBarView: View {
                     .foregroundColor(Color(hex: "FFD60A"))
                 Text("\(appState.totalSlaps) gifles")
                     .font(.caption)
-                    .foregroundColor(Color(hex: "8888AA"))
+                    .foregroundColor(labelColor)
                 Spacer()
 
                 if !appState.isLicensed {
@@ -126,7 +145,7 @@ struct MenuBarView: View {
                     NSApplication.shared.terminate(nil)
                 }
                 .font(.caption)
-                .foregroundColor(Color(hex: "8888AA"))
+                .foregroundColor(labelColor)
             }
         }
         .padding(16)

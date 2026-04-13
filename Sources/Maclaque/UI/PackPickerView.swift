@@ -16,10 +16,10 @@ struct PackPickerView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(pack.name)
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundColor(Color(hex: "F0F0F5"))
+                                .foregroundColor(Color.primary)
                             Text(pack.description)
                                 .font(.system(size: 10))
-                                .foregroundColor(Color(hex: "8888AA"))
+                                .foregroundColor(Color.primary.opacity(0.55))
                                 .lineLimit(1)
                         }
 
