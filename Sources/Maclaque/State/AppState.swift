@@ -121,6 +121,7 @@ final class AppState: ObservableObject {
     private func handleDaemonEvent(_ event: DaemonEvent) {
         debugLog("[AppState] Event received: type=\(event.type) intensity=\(event.intensity ?? -1) action=\(event.action ?? "nil")")
         guard isActive else { debugLog("[AppState] Not active, ignoring"); return }
+        guard hasCompletedOnboarding else { debugLog("[AppState] Onboarding not completed, ignoring"); return }
 
         switch event.type {
         case "slap":
