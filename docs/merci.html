@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merci ! — Maclaque</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #FF2A1F;
+            --color-bg: #0D0D17;
+            --color-surface: #16162A;
+            --color-border: #2A2A42;
+            --color-text-high: #F0F0F5;
+            --color-text-low: #8888AA;
+            --color-accent: #FFD60A;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text-high);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .emoji { font-size: 4rem; margin-bottom: 24px; }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        h1 span { color: var(--color-primary); }
+
+        .subtitle {
+            color: var(--color-text-low);
+            margin-bottom: 32px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--color-primary);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.125rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            box-shadow: 0 0 32px rgba(255, 42, 31, 0.4);
+        }
+
+        .download-btn:hover {
+            background: #E01A0F;
+            transform: translateY(-2px);
+        }
+
+        .instructions {
+            margin-top: 32px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            font-size: 1rem;
+            margin-bottom: 16px;
+            color: var(--color-accent);
+        }
+
+        .instructions ol {
+            list-style: none;
+            counter-reset: step;
+        }
+
+        .instructions li {
+            counter-increment: step;
+            padding: 8px 0;
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+            display: flex;
+            gap: 12px;
+        }
+
+        .instructions li::before {
+            content: counter(step);
+            background: var(--color-primary);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .note {
+            margin-top: 24px;
+            padding: 16px;
+            background: rgba(255, 214, 10, 0.05);
+            border: 1px solid rgba(255, 214, 10, 0.15);
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--color-text-low);
+        }
+
+        footer {
+            margin-top: 32px;
+            font-size: 0.8rem;
+            color: var(--color-text-low);
+        }
+
+        footer a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="emoji">&#x1F389;</div>
+    <h1>Merci <span>!</span></h1>
+    <p class="subtitle">Ton achat est confirm&eacute;. T&eacute;l&eacute;charge Maclaque et gifle ton Mac.</p>
+
+    <!-- REMPLACE CE LIEN par l'URL du DMG (GitHub Release ou serveur) -->
+    <a href="https://github.com/stranity/maclaque/releases/latest/download/Maclaque-v1.0.dmg" class="download-btn">
+        &#x2B07; T&eacute;l&eacute;charger Maclaque.dmg
+    </a>
+
+    <div class="instructions">
+        <h3>Installation rapide</h3>
+        <ol>
+            <li>Ouvre le fichier <strong>Maclaque-v1.0.dmg</strong></li>
+            <li>Glisse <strong>Maclaque</strong> dans le dossier <strong>Applications</strong></li>
+            <li>Lance l'app &mdash; elle appara&icirc;t dans ta barre de menu (en haut &agrave; droite)</li>
+            <li>Suis l'onboarding pour installer le daemon (mot de passe demand&eacute; une seule fois)</li>
+            <li>Gifle ton Mac et profite !</li>
+        </ol>
+    </div>
+
+    <div class="note">
+        <strong>Probl&egrave;me ?</strong> Si macOS bloque l'app, va dans R&eacute;glages &gt; Confidentialit&eacute; et s&eacute;curit&eacute;
+        et clique &laquo; Ouvrir quand m&ecirc;me &raquo;. L'app est sign&eacute;e et notaris&eacute;e par Apple.
+    </div>
+</div>
+
+<footer>
+    <a href="mailto:contact@maclaque.shop">Un probl&egrave;me ? Contacte-nous</a>
+</footer>
+
+</body>
+</html>

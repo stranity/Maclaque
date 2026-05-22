@@ -144,16 +144,6 @@ struct CustomPackView: View {
     }
 
     private func generatePack() {
-        guard appState.isLicensed else {
-            errorMessage = "Achète Maclaque pour créer des packs custom."
-            return
-        }
-
-        guard let licenseKey = appState.currentLicenseKey, !licenseKey.isEmpty else {
-            errorMessage = "Licence introuvable. Réactive ta licence."
-            return
-        }
-
         let customBase = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             .appendingPathComponent("Maclaque/CustomSounds", isDirectory: true)
         let existingPacks = (try? FileManager.default.contentsOfDirectory(at: customBase, includingPropertiesForKeys: nil))?.filter { $0.hasDirectoryPath }.count ?? 0
@@ -185,7 +175,6 @@ struct CustomPackView: View {
                     _ = try await ElevenLabsService.shared.generateSpeech(
                         text: clip.text,
                         voiceId: voiceId,
-                        licenseKey: licenseKey,
                         saveTo: packDir,
                         filename: filename
                     )

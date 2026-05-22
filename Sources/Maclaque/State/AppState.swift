@@ -50,10 +50,6 @@ final class AppState: ObservableObject {
     @Published var totalSlaps: Int {
         didSet { Preferences.shared.totalSlaps = totalSlaps }
     }
-    @Published var freeSlapsRemaining: Int {
-        didSet { Preferences.shared.freeSlapsRemaining = freeSlapsRemaining }
-    }
-    @Published var isLicensed: Bool = false
     @Published var chargeSoundEnabled: Bool {
         didSet { Preferences.shared.chargeSoundEnabled = chargeSoundEnabled }
     }
@@ -65,11 +61,6 @@ final class AppState: ObservableObject {
     let audioEngine: AudioEngine
     var soundPackManager: SoundPackManager?
     private var socketClient: SocketClient?
-    private let licenseManager = LicenseManager()
-
-    var currentLicenseKey: String? {
-        licenseManager.storedLicenseKey
-    }
 
     init() {
         let prefs = Preferences.shared
@@ -79,7 +70,6 @@ final class AppState: ObservableObject {
         self.cooldown = prefs.cooldown
         self.masterVolume = prefs.masterVolume
         self.totalSlaps = prefs.totalSlaps
-        self.freeSlapsRemaining = prefs.freeSlapsRemaining
         self.chargeSoundEnabled = prefs.chargeSoundEnabled
         self.hasCompletedOnboarding = prefs.hasCompletedOnboarding
 
@@ -90,10 +80,6 @@ final class AppState: ObservableObject {
         packManager.currentPackId = currentPackId
         self.soundPackManager = packManager
 
-        // Check license
-        self.isLicensed = licenseManager.isActivated
-
-        // Connect to daemon
         connectToDaemon()
     }
 
@@ -126,13 +112,6 @@ final class AppState: ObservableObject {
         switch event.type {
         case "slap":
             guard let intensity = event.intensity else { debugLog("[AppState] No intensity"); return }
-
-            // Check trial
-            if !isLicensed {
-                guard freeSlapsRemaining > 0 else { print("[AppState] No free slaps remaining"); return }
-                freeSlapsRemaining -= 1
-            }
-
             totalSlaps += 1
             debugLog("[AppState] Playing slap sound, intensity=\(intensity), pack=\(currentPackId), packs loaded=\(soundPackManager?.packs.count ?? 0)")
             soundPackManager?.playRandom(intensity: intensity)
@@ -148,20 +127,11 @@ final class AppState: ObservableObject {
         }
     }
 
-    /// Push current sensitivity & cooldown to the daemon
     private func sendConfigToDaemon() {
         socketClient?.sendConfig(
             sensitivity: Float(sensitivity),
             cooldown: cooldown
         )
-    }
-
-    func activateLicense(_ key: String) async -> Bool {
-        let success = await licenseManager.validate(licenseKey: key)
-        await MainActor.run {
-            isLicensed = success
-        }
-        return success
     }
 }
 

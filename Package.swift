@@ -43,7 +43,6 @@ let package = Package(
             ],
             linkerSettings: [
                 .linkedFramework("AVFoundation"),
-                .linkedFramework("Security"),
                 .linkedFramework("ServiceManagement"),
             ]
         ),

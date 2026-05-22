@@ -1,7 +1,7 @@
 interface Env {
   KV: KVNamespace;
   ELEVENLABS_API_KEY: string;
-  LEMONSQUEEZY_API_KEY: string;
+  APP_SECRET: string;
 }
 
 const ALLOWED_VOICES = new Set([
@@ -12,36 +12,34 @@ const ALLOWED_VOICES = new Set([
   "XB0fDUnXU5powFXDhCwa", // Charlotte
 ]);
 
-const MAX_GENERATIONS = 15;
+const MAX_GENERATIONS_PER_DEVICE = 15;
 const MAX_TEXT_LENGTH = 200;
-const LICENSE_CACHE_TTL = 86400; // 24h
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    // Only POST /v1/generate
     const url = new URL(request.url);
     if (request.method !== "POST" || url.pathname !== "/v1/generate") {
       return new Response("Not Found", { status: 404 });
     }
 
-    // Extract license key
-    const licenseKey = request.headers.get("X-License-Key");
-    if (!licenseKey) {
-      return json({ error: "Missing license key" }, 401);
+    // Validate app secret
+    const appSecret = request.headers.get("X-App-Secret");
+    if (!appSecret || appSecret !== env.APP_SECRET) {
+      return json({ error: "Unauthorized" }, 401);
     }
 
-    // Validate license (cached in KV)
-    const isValid = await validateLicense(licenseKey, env);
-    if (!isValid) {
-      return json({ error: "Invalid or inactive license" }, 403);
+    // Device UUID for generation tracking
+    const deviceId = request.headers.get("X-Device-Id");
+    if (!deviceId || deviceId.length < 10) {
+      return json({ error: "Missing device identifier" }, 400);
     }
 
-    // Check generation counter
-    const counterKey = `gens:${licenseKey}`;
+    // Check generation counter per device
+    const counterKey = `gens:${deviceId}`;
     const currentCount = parseInt((await env.KV.get(counterKey)) || "0", 10);
-    if (currentCount >= MAX_GENERATIONS) {
+    if (currentCount >= MAX_GENERATIONS_PER_DEVICE) {
       return json(
-        { error: `Generation limit reached (${MAX_GENERATIONS})` },
+        { error: `Generation limit reached (${MAX_GENERATIONS_PER_DEVICE})` },
         429
       );
     }
@@ -90,73 +88,26 @@ export default {
     });
 
     if (!ttsResponse.ok) {
-      const errBody = await ttsResponse.text();
       return json(
         { error: `ElevenLabs error: ${ttsResponse.status}` },
         502
       );
     }
 
-    // Increment counter (no expiration — lifetime limit)
+    // Increment counter
     await env.KV.put(counterKey, String(currentCount + 1));
 
-    // Return raw MP3
     return new Response(ttsResponse.body, {
       status: 200,
       headers: {
         "Content-Type": "audio/mpeg",
         "X-Generations-Remaining": String(
-          MAX_GENERATIONS - currentCount - 1
+          MAX_GENERATIONS_PER_DEVICE - currentCount - 1
         ),
       },
     });
   },
 };
-
-async function validateLicense(
-  licenseKey: string,
-  env: Env
-): Promise<boolean> {
-  // Check KV cache first
-  const cacheKey = `license:${licenseKey}`;
-  const cached = await env.KV.get(cacheKey);
-  if (cached === "valid") return true;
-  if (cached === "invalid") return false;
-
-  // Validate via LemonSqueezy API
-  try {
-    const response = await fetch(
-      "https://api.lemonsqueezy.com/v1/licenses/validate",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          license_key: licenseKey,
-          instance_name: "maclaque-proxy",
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      await env.KV.put(cacheKey, "invalid", {
-        expirationTtl: LICENSE_CACHE_TTL,
-      });
-      return false;
-    }
-
-    const data = (await response.json()) as { valid?: boolean };
-    const valid = data.valid === true;
-
-    await env.KV.put(cacheKey, valid ? "valid" : "invalid", {
-      expirationTtl: LICENSE_CACHE_TTL,
-    });
-
-    return valid;
-  } catch {
-    // On network error, deny access
-    return false;
-  }
-}
 
 function json(data: object, status: number): Response {
   return new Response(JSON.stringify(data), {

@@ -3,9 +3,6 @@ import SwiftUI
 struct OnboardingView: View {
     @EnvironmentObject var appState: AppState
     @State private var currentStep = 0
-    @State private var licenseKeyInput = ""
-    @State private var isValidating = false
-    @State private var licenseError = false
     @State private var isInstalling = false
     @State private var installError: String?
     @Environment(\.dismiss) private var dismiss
@@ -34,11 +31,10 @@ struct OnboardingView: View {
 
                 Spacer()
 
-                // Content
                 switch currentStep {
                 case 0: welcomeStep
                 case 1: permissionsStep
-                case 2: activateStep
+                case 2: readyStep
                 default: EmptyView()
                 }
 
@@ -100,9 +96,7 @@ struct OnboardingView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
-            // Install button or status
             if appState.isDaemonConnected {
-                // Already connected
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
@@ -112,7 +106,6 @@ struct OnboardingView: View {
                 }
                 .padding(.vertical, 8)
             } else if DaemonInstaller.isInstalled {
-                // Installed but not connected yet
                 HStack(spacing: 8) {
                     ProgressView()
                         .scaleEffect(0.7)
@@ -122,7 +115,6 @@ struct OnboardingView: View {
                 }
                 .padding(.vertical, 8)
             } else {
-                // Not installed — show install button
                 Button(action: installDaemon) {
                     HStack(spacing: 8) {
                         if isInstalling {
@@ -144,7 +136,6 @@ struct OnboardingView: View {
                 .disabled(isInstalling)
             }
 
-            // Error message
             if let error = installError {
                 Text(error)
                     .font(.system(size: 12))
@@ -153,7 +144,6 @@ struct OnboardingView: View {
                     .padding(.horizontal, 40)
             }
 
-            // What this does
             VStack(alignment: .leading, spacing: 6) {
                 infoRow(icon: "shield.checkmark", text: "Composant vérifié et signé par Maclaque")
                 infoRow(icon: "bolt.fill", text: "Se lance automatiquement au démarrage")
@@ -175,19 +165,17 @@ struct OnboardingView: View {
         }
     }
 
-    // ── Step 3: Activate ───────────────────────────────────────────────
-    private var activateStep: some View {
+    // ── Step 3: Ready ──────────────────────────────────────────────────
+    private var readyStep: some View {
         VStack(spacing: 20) {
             Text("🎉")
                 .font(.system(size: 64))
 
-            Text(appState.isLicensed ? "C'est parti !" : "\(Constants.maxFreeSlaps) gifles offertes !")
+            Text("C'est parti !")
                 .font(.system(size: 28, weight: .bold))
                 .foregroundColor(textHigh)
 
-            Text(appState.isLicensed
-                 ? "Maclaque est activé. Giflez sans limite."
-                 : "Essaie Maclaque maintenant.\nSi t'aimes, c'est 4,99€ pour la vie.")
+            Text("Maclaque est prêt.\nGifle ton Mac et profite !")
                 .font(.system(size: 14))
                 .foregroundColor(textLow)
                 .multilineTextAlignment(.center)
@@ -205,38 +193,8 @@ struct OnboardingView: View {
             .background(Color.white.opacity(0.05))
             .cornerRadius(10)
 
-            if !appState.isLicensed {
-                Link(destination: URL(string: Constants.lemonSqueezyCheckoutURL)!) {
-                    Text("Acheter 4,99€")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.black)
-                        .frame(maxWidth: 200)
-                        .padding(.vertical, 12)
-                        .background(accentColor)
-                        .cornerRadius(12)
-                }
-
-                HStack {
-                    TextField("Ou entrer une clé de licence", text: $licenseKeyInput)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(maxWidth: 240)
-
-                    Button("Activer") {
-                        validateLicense()
-                    }
-                    .disabled(licenseKeyInput.isEmpty || isValidating)
-                }
-                .padding(.horizontal, 40)
-
-                if licenseError {
-                    Text("Clé invalide")
-                        .foregroundColor(.red)
-                        .font(.caption)
-                }
-            }
-
             Button(action: finishOnboarding) {
-                Text(appState.isLicensed ? "Commencer" : "Essayer gratuitement")
+                Text("Commencer")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: 200)
@@ -271,21 +229,8 @@ struct OnboardingView: View {
                 isInstalling = false
                 installError = error
                 if error == nil {
-                    // Reconnect to the daemon
                     appState.connectToDaemon()
                 }
-            }
-        }
-    }
-
-    private func validateLicense() {
-        isValidating = true
-        licenseError = false
-        Task {
-            let success = await appState.activateLicense(licenseKeyInput)
-            await MainActor.run {
-                isValidating = false
-                licenseError = !success
             }
         }
     }

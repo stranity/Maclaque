@@ -9,7 +9,6 @@ struct MenuBarView: View {
 
     var body: some View {
         if showCustomPack {
-            // Custom pack creation view (inline)
             VStack(spacing: 0) {
                 HStack {
                     Button(action: { withAnimation { showCustomPack = false } }) {
@@ -44,7 +43,6 @@ struct MenuBarView: View {
 
                 Spacer()
 
-                // Daemon status indicator
                 Circle()
                     .fill(appState.isDaemonConnected ? Color.green : Color.red)
                     .frame(width: 8, height: 8)
@@ -119,7 +117,7 @@ struct MenuBarView: View {
 
             Divider()
 
-            // Stats & actions
+            // Stats
             HStack {
                 Image(systemName: "hand.tap.fill")
                     .foregroundColor(Color(hex: "FFD60A"))
@@ -127,12 +125,6 @@ struct MenuBarView: View {
                     .font(.caption)
                     .foregroundColor(labelColor)
                 Spacer()
-
-                if !appState.isLicensed {
-                    Text("\(appState.freeSlapsRemaining) essais restants")
-                        .font(.caption)
-                        .foregroundColor(Color(hex: "FF5A54"))
-                }
             }
 
             // Charge sound toggle
