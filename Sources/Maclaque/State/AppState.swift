@@ -57,6 +57,7 @@ final class AppState: ObservableObject {
         didSet { Preferences.shared.hasCompletedOnboarding = hasCompletedOnboarding }
     }
     @Published var isDaemonConnected: Bool = false
+    @Published var trialExpired: Bool = false
 
     let audioEngine: AudioEngine
     var soundPackManager: SoundPackManager?
@@ -72,6 +73,8 @@ final class AppState: ObservableObject {
         self.totalSlaps = prefs.totalSlaps
         self.chargeSoundEnabled = prefs.chargeSoundEnabled
         self.hasCompletedOnboarding = prefs.hasCompletedOnboarding
+
+        self.trialExpired = (prefs.tier == "free" && prefs.totalSlaps >= Constants.freeSlapsLimit)
 
         self.audioEngine = AudioEngine()
         self.audioEngine.setMasterVolume(Float(masterVolume))
@@ -112,15 +115,31 @@ final class AppState: ObservableObject {
         switch event.type {
         case "slap":
             guard let intensity = event.intensity else { debugLog("[AppState] No intensity"); return }
+
+            // Free trial: block after limit
+            if Preferences.shared.tier == "free" {
+                if totalSlaps >= Constants.freeSlapsLimit {
+                    trialExpired = true
+                    debugLog("[AppState] Trial expired (\(totalSlaps)/\(Constants.freeSlapsLimit))")
+                    return
+                }
+            }
+
             totalSlaps += 1
             debugLog("[AppState] Playing slap sound, intensity=\(intensity), pack=\(currentPackId), packs loaded=\(soundPackManager?.packs.count ?? 0)")
             soundPackManager?.playRandom(intensity: intensity)
 
         case "usb":
             guard chargeSoundEnabled else { return }
+            guard !trialExpired else { return }
             let trigger = (event.action == "plug") ? "charge_plug" : "charge_unplug"
             let usbIntensity: Float = (event.action == "plug") ? 0.6 : 0.4
             soundPackManager?.playForEvent(trigger: trigger, intensity: usbIntensity)
+
+        case "lid":
+            guard !trialExpired else { return }
+            let trigger = (event.action == "opened") ? "lid_open" : "lid_close"
+            soundPackManager?.playForEvent(trigger: trigger, intensity: 0.5)
 
         default:
             break

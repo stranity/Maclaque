@@ -27,8 +27,21 @@ struct SoundPack: Codable, Identifiable {
         // Filter by trigger
         let triggerClips = clips.filter { $0.resolvedTrigger == triggerType }
 
-        // For slap triggers, use all clips regardless of intensity bracket
-        // (real-world intensity values vary by hardware)
+        // For slap triggers, prefer matching intensity bracket
+        if triggerType == "slap" && !triggerClips.isEmpty {
+            let bracket: String
+            if intensity < 0.33 {
+                bracket = "light"
+            } else if intensity < 0.66 {
+                bracket = "medium"
+            } else {
+                bracket = "hard"
+            }
+            let matched = triggerClips.filter { $0.intensity == bracket }
+            // Fall back to all trigger clips if no bracket match
+            return matched.isEmpty ? triggerClips : matched
+        }
+
         if !triggerClips.isEmpty { return triggerClips }
 
         // Ultimate fallback: slap clips, then all clips

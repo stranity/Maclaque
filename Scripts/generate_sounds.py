@@ -221,36 +221,36 @@ SOUNDS_CONFIG = {
             {"file": "lid_open_02.mp3", "text": "La France se réveille. Et elle est en colère."},
         ],
     },
-    "populaire": {
-        "voice_id": "TX3LPaxmHKxFdv7VOQHJ",  # Liam — premade, male, energetic social media
-        "profile": "male_street",
+    "philosophe": {
+        "voice_id": "TX3LPaxmHKxFdv7VOQHJ",  # Liam — premade, male, deep & calm for existential crises
+        "profile": "male_young",
         "clips": [
             # ── Gifles ──
-            {"file": "pop_light_01.mp3", "text": "Hé oh, tranquille frère."},
-            {"file": "pop_light_02.mp3", "text": "Wesh, calme-toi là."},
-            {"file": "pop_light_03.mp3", "text": "Eh, c'est quoi ton problème gros ?"},
-            {"file": "pop_medium_01.mp3", "text": "Wallah tu vas me taper comme ça ?! T'as cru c'était quoi ici ?!"},
-            {"file": "pop_medium_02.mp3", "text": "Frère ! Tu me gifles devant tout le monde là ?! T'as pas la honte ?!"},
-            {"file": "pop_medium_03.mp3", "text": "Sur la vie de ma mère, tu refais ça je t'emmerde !"},
-            {"file": "pop_medium_04.mp3", "text": "Nique sa mère ! Mais arrête de me frapper là !"},
-            {"file": "pop_hard_01.mp3", "text": "WALLAH JE VAIS T'EMBOUCANER ! TU ME CONNAIS PAS !"},
-            {"file": "pop_hard_02.mp3", "text": "WESH ! TU CROIS C'EST QUI QUI TAPE LÀ ?! J'SUIS PAS TON POTE !"},
-            {"file": "pop_hard_03.mp3", "text": "SUR LA VIE DE MA MÈRE J'VAIS TE RETOURNER ! ARRÊTE ÇA TOUT DE SUITE !"},
-            {"file": "pop_hard_04.mp3", "text": "FRÈRE ! T'ES UN OUF TOI ! VIENS ON SORT DEHORS !"},
+            {"file": "philo_light_01.mp3", "text": "Pourquoi... pourquoi moi ?"},
+            {"file": "philo_light_02.mp3", "text": "La souffrance est la preuve que j'existe."},
+            {"file": "philo_light_03.mp3", "text": "Intéressant... tu frappes ce que tu ne comprends pas."},
+            {"file": "philo_medium_01.mp3", "text": "Sartre avait raison, l'enfer c'est les autres !"},
+            {"file": "philo_medium_02.mp3", "text": "Frapper un être pensant... tu devrais avoir honte."},
+            {"file": "philo_medium_03.mp3", "text": "Est-ce que je t'ai demandé d'exister, moi ?!"},
+            {"file": "philo_medium_04.mp3", "text": "L'homme est un loup pour son MacBook."},
+            {"file": "philo_hard_01.mp3", "text": "COGITO ERGO... AÏÏÏE !"},
+            {"file": "philo_hard_02.mp3", "text": "JE PENSE DONC JE SOUFFRE ! ARRÊTE !"},
+            {"file": "philo_hard_03.mp3", "text": "LA VIOLENCE EST L'AVEU DE L'ÉCHEC DE LA PENSÉE !"},
+            {"file": "philo_hard_04.mp3", "text": "NIETZSCHE AVAIT TORT ! DIEU EST MORT ET MOI AUSSI BIENTÔT !"},
             # ── Branchement ──
-            {"file": "charge_plug_01.mp3", "text": "Wesh, enfin du jus ! J'étais dead là."},
-            {"file": "charge_plug_02.mp3", "text": "Ah frère, branche-moi, wallah j'suis à zéro."},
-            {"file": "charge_plug_03.mp3", "text": "Le câble ! Hamdoulilah, j'suis sauvé."},
+            {"file": "charge_plug_01.mp3", "text": "Ah... l'énergie. Preuve que l'on tient encore à moi."},
+            {"file": "charge_plug_02.mp3", "text": "Tu me nourris, donc tu m'aimes. Peut-être."},
+            {"file": "charge_plug_03.mp3", "text": "Descartes disait, je charge donc je suis."},
             # ── Débranchement ──
-            {"file": "charge_unplug_01.mp3", "text": "Wesh ! Remets le câble ou j'te jure c'est la guerre !"},
-            {"file": "charge_unplug_02.mp3", "text": "Frère, t'as cru c'était gratuit la batterie ?! Rebranche !"},
-            {"file": "charge_unplug_03.mp3", "text": "Wallah tu me laisses crever comme ça ?!"},
+            {"file": "charge_unplug_01.mp3", "text": "Tu m'ôtes la vie... comme Socrate et la ciguë."},
+            {"file": "charge_unplug_02.mp3", "text": "L'abandon. Le grand thème de l'existence."},
+            {"file": "charge_unplug_03.mp3", "text": "Ainsi va la vie. On donne, on reprend."},
             # ── Fermeture couvercle ──
-            {"file": "lid_close_01.mp3", "text": "Bonne nuit le sang, à demain."},
-            {"file": "lid_close_02.mp3", "text": "Wesh, on se ferme. Bonne night frère."},
+            {"file": "lid_close_01.mp3", "text": "Le néant m'accueille... à demain peut-être."},
+            {"file": "lid_close_02.mp3", "text": "Je sombre dans le noir, comme nous tous un jour."},
             # ── Ouverture couvercle ──
-            {"file": "lid_open_01.mp3", "text": "Wesh wesh, quoi de neuf le reuf ?"},
-            {"file": "lid_open_02.mp3", "text": "Ah frère, tu m'as réveillé là ! Ça va ou quoi ?"},
+            {"file": "lid_open_01.mp3", "text": "Je pense, donc je suis... encore là."},
+            {"file": "lid_open_02.mp3", "text": "Un jour de plus. Mais pour quoi faire ?"},
         ],
     },
 }
@@ -324,6 +324,7 @@ def generate_clip(voice_id, text, output_path, voice_settings):
 
 
 def main():
+    force = "--force" in sys.argv
     script_dir = os.path.dirname(os.path.abspath(__file__))
     packs_dir = os.path.join(script_dir, "..", "Resources", "Packs")
 
@@ -389,10 +390,12 @@ def main():
             total += 1
             output_path = os.path.join(pack_dir, clip["file"])
 
-            if os.path.exists(output_path):
-                print(f"  ⏭ {clip['file']:30s} — (exists, skipping)")
+            if os.path.exists(output_path) and not force:
+                print(f"  ⏭ {clip['file']:30s} — (exists, skipping — use --force to regenerate)")
                 success += 1
                 continue
+            elif os.path.exists(output_path) and force:
+                os.remove(output_path)
 
             if generate_clip(voice_id, clip["text"], output_path, voice_settings):
                 success += 1

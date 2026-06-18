@@ -52,22 +52,22 @@ struct OnboardingView: View {
                 .font(.system(size: 80))
                 .shadow(color: primaryColor.opacity(0.5), radius: 20)
 
-            Text("Gifle ton Mac.")
+            Text(L10n.slapYourMac)
                 .font(.system(size: 36, weight: .bold))
                 .foregroundColor(textHigh)
 
-            Text(Constants.tagline)
+            Text(L10n.tagline)
                 .font(.system(size: 18))
                 .foregroundColor(textLow)
 
-            Text("Ton MacBook a un accéléromètre secret.\nMaclaque le transforme en punching bag vocal.")
+            Text(L10n.onboardingDescription)
                 .font(.system(size: 14))
                 .foregroundColor(textLow)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
 
             Button(action: { withAnimation { currentStep = 1 } }) {
-                Text("Commencer")
+                Text(L10n.start)
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: 200)
@@ -86,11 +86,11 @@ struct OnboardingView: View {
                 .font(.system(size: 48))
                 .foregroundColor(accentColor)
 
-            Text("Installation du daemon")
+            Text(L10n.daemonInstallTitle)
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(textHigh)
 
-            Text("Maclaque a besoin d'un petit composant\npour lire l'accéléromètre de ton Mac.\nTon mot de passe sera demandé une seule fois.")
+            Text(L10n.daemonInstallDescription)
                 .font(.system(size: 13))
                 .foregroundColor(textLow)
                 .multilineTextAlignment(.center)
@@ -100,7 +100,7 @@ struct OnboardingView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
-                    Text("Daemon installé et connecté !")
+                    Text(L10n.daemonInstalledConnected)
                         .foregroundColor(.green)
                         .font(.system(size: 14, weight: .medium))
                 }
@@ -109,7 +109,7 @@ struct OnboardingView: View {
                 HStack(spacing: 8) {
                     ProgressView()
                         .scaleEffect(0.7)
-                    Text("Daemon installé, connexion en cours...")
+                    Text(L10n.daemonInstalledConnecting)
                         .foregroundColor(.orange)
                         .font(.system(size: 13))
                 }
@@ -123,7 +123,7 @@ struct OnboardingView: View {
                         } else {
                             Image(systemName: "arrow.down.circle.fill")
                         }
-                        Text(isInstalling ? "Installation..." : "Installer")
+                        Text(isInstalling ? L10n.installing : L10n.install)
                     }
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
@@ -145,15 +145,15 @@ struct OnboardingView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                infoRow(icon: "shield.checkmark", text: "Composant vérifié et signé par Maclaque")
-                infoRow(icon: "bolt.fill", text: "Se lance automatiquement au démarrage")
-                infoRow(icon: "trash", text: "Désinstallable à tout moment depuis les Paramètres")
+                infoRow(icon: "shield.checkmark", text: L10n.infoSigned)
+                infoRow(icon: "bolt.fill", text: L10n.infoAutoStart)
+                infoRow(icon: "trash", text: L10n.infoUninstall)
             }
             .padding(.horizontal, 40)
             .padding(.top, 8)
 
             Button(action: { withAnimation { currentStep = 2 } }) {
-                Text(appState.isDaemonConnected ? "Continuer" : "Passer pour l'instant")
+                Text(appState.isDaemonConnected ? L10n.continueButton : L10n.skipForNow)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: 200)
@@ -171,11 +171,11 @@ struct OnboardingView: View {
             Text("🎉")
                 .font(.system(size: 64))
 
-            Text("C'est parti !")
+            Text(L10n.letsGo)
                 .font(.system(size: 28, weight: .bold))
                 .foregroundColor(textHigh)
 
-            Text("Maclaque est prêt.\nGifle ton Mac et profite !")
+            Text(L10n.onboardingReady)
                 .font(.system(size: 14))
                 .foregroundColor(textLow)
                 .multilineTextAlignment(.center)
@@ -184,7 +184,7 @@ struct OnboardingView: View {
                 Image(systemName: "menubar.arrow.up.rectangle")
                     .foregroundColor(accentColor)
                     .font(.system(size: 16))
-                Text("Maclaque vit dans ta barre de menu\nen haut à droite de l'écran.")
+                Text(L10n.menuBarHint)
                     .font(.system(size: 12))
                     .foregroundColor(textLow)
                     .multilineTextAlignment(.leading)
@@ -194,7 +194,7 @@ struct OnboardingView: View {
             .cornerRadius(10)
 
             Button(action: finishOnboarding) {
-                Text("Commencer")
+                Text(L10n.start)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: 200)

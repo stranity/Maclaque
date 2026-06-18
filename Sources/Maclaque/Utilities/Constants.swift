@@ -22,4 +22,12 @@ enum Constants {
     // Proxy (ElevenLabs TTS)
     static let proxyBaseURL = "https://maclaque-proxy.melbeherec.workers.dev"
     static let proxyAppSecret = "mcq-2026-prod-s3cr3t"
+
+    // Trial
+    static let freeSlapsLimit = 10
+
+    // Custom voices
+    static let keyCustomVoices = "maclaque.customVoices"
+    static let keyTier = "maclaque.tier"
+    static let keyActivationCode = "maclaque.activationCode"
 }

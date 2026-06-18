@@ -2,23 +2,24 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
+    @State private var selectedLanguage: AppLanguage = AppLanguage(rawValue: Preferences.shared.language) ?? .fr
 
     var body: some View {
         TabView {
             generalTab
                 .tabItem {
-                    Label("Général", systemImage: "gear")
+                    Label(L10n.tabGeneral, systemImage: "gear")
                 }
 
             CustomPackView()
                 .environmentObject(appState)
                 .tabItem {
-                    Label("Pack custom", systemImage: "wand.and.stars")
+                    Label(L10n.tabCustomPack, systemImage: "wand.and.stars")
                 }
 
             aboutTab
                 .tabItem {
-                    Label("À propos", systemImage: "info.circle")
+                    Label(L10n.tabAbout, systemImage: "info.circle")
                 }
         }
         .frame(width: 420, height: 520)
@@ -27,23 +28,33 @@ struct SettingsView: View {
     // ── General tab ────────────────────────────────────────────────────
     private var generalTab: some View {
         Form {
-            Toggle("Lancer au démarrage", isOn: Binding(
+            // Language picker
+            Picker(L10n.language, selection: $selectedLanguage) {
+                ForEach(AppLanguage.allCases, id: \.self) { lang in
+                    Text(lang.displayName).tag(lang)
+                }
+            }
+            .onChange(of: selectedLanguage) { newValue in
+                Preferences.shared.language = newValue.rawValue
+            }
+
+            Toggle(L10n.launchAtStartup, isOn: Binding(
                 get: { LaunchAtLogin.isEnabled },
                 set: { LaunchAtLogin.isEnabled = $0 }
             ))
 
-            Toggle("Son de charge (branchement)", isOn: $appState.chargeSoundEnabled)
+            Toggle(L10n.chargeSoundToggle, isOn: $appState.chargeSoundEnabled)
 
             Slider(value: $appState.sensitivity, in: 1...10, step: 1) {
-                Text("Sensibilité : \(Int(appState.sensitivity))")
+                Text(L10n.sensitivityLabel(Int(appState.sensitivity)))
             }
 
             Slider(value: $appState.cooldown, in: 0.3...2.0, step: 0.1) {
-                Text("Cooldown : \(String(format: "%.1f", appState.cooldown))s")
+                Text(L10n.cooldownLabel(String(format: "%.1f", appState.cooldown)))
             }
 
             Slider(value: $appState.masterVolume, in: 0...1) {
-                Text("Volume : \(Int(appState.masterVolume * 100))%")
+                Text(L10n.volumeLabel(Int(appState.masterVolume * 100)))
             }
         }
         .padding()
@@ -57,7 +68,7 @@ struct SettingsView: View {
             Text("Maclaque")
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(Color(hex: "FF2A1F"))
-            Text(Constants.tagline)
+            Text(L10n.tagline)
                 .foregroundColor(.secondary)
             Text("v\(Constants.version)")
                 .font(.caption)
@@ -65,10 +76,10 @@ struct SettingsView: View {
 
             Divider()
 
-            Text("Gifles totales : \(appState.totalSlaps)")
+            Text(L10n.totalSlaps(appState.totalSlaps))
                 .font(.caption)
 
-            Text("100% local. Zéro tracking. RGPD-friendly.")
+            Text(L10n.privacyNote)
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

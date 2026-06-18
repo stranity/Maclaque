@@ -51,6 +51,11 @@ final class Preferences {
         set { defaults.set(newValue, forKey: Constants.keyHasCompletedOnboarding) }
     }
 
+    var language: String {
+        get { defaults.string(forKey: "maclaque.language") ?? "fr" }
+        set { defaults.set(newValue, forKey: "maclaque.language") }
+    }
+
     /// Unique device identifier (persists across app launches)
     var deviceId: String {
         if let existing = defaults.string(forKey: "maclaque.deviceId") {
@@ -60,4 +65,41 @@ final class Preferences {
         defaults.set(newId, forKey: "maclaque.deviceId")
         return newId
     }
+
+    /// Current tier: "basic" or "plus"
+    var tier: String {
+        get { defaults.string(forKey: Constants.keyTier) ?? "free" }
+        set { defaults.set(newValue, forKey: Constants.keyTier) }
+    }
+
+    /// Stored activation code (if Plus activated)
+    var activationCode: String? {
+        get { defaults.string(forKey: Constants.keyActivationCode) }
+        set { defaults.set(newValue, forKey: Constants.keyActivationCode) }
+    }
+
+    /// Custom cloned voices: [{voiceId, name, createdAt}]
+    var customVoices: [CustomVoice] {
+        get {
+            guard let data = defaults.data(forKey: Constants.keyCustomVoices),
+                  let voices = try? JSONDecoder().decode([CustomVoice].self, from: data) else {
+                return []
+            }
+            return voices
+        }
+        set {
+            if let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: Constants.keyCustomVoices)
+            }
+        }
+    }
+}
+
+/// A cloned voice stored locally
+struct CustomVoice: Codable, Identifiable {
+    let voiceId: String
+    let name: String
+    let createdAt: String
+
+    var id: String { voiceId }
 }

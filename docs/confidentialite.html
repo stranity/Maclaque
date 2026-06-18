@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique de confidentialit&eacute; &mdash; Maclaque</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #FF2A1F;
+            --color-bg: #0D0D17;
+            --color-surface: #16162A;
+            --color-border: #2A2A42;
+            --color-text-high: #F0F0F5;
+            --color-text-low: #8888AA;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text-high);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        h1 span { color: var(--color-primary); }
+        .updated {
+            color: var(--color-text-low);
+            font-size: 0.8rem;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 1.125rem;
+            margin-top: 32px;
+            margin-bottom: 12px;
+            color: var(--color-primary);
+        }
+        p, li {
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+            margin-bottom: 8px;
+        }
+        a { color: var(--color-primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .back {
+            display: inline-block;
+            margin-bottom: 32px;
+            color: var(--color-text-low);
+            font-size: 0.875rem;
+        }
+        .back:hover { color: var(--color-text-high); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+        th {
+            color: var(--color-text-high);
+            font-weight: 600;
+        }
+        td { color: var(--color-text-low); }
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-low);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="/" class="back">&larr; Retour &agrave; maclaque.shop</a>
+
+    <h1>Politique de <span>confidentialit&eacute;</span></h1>
+    <p class="updated">Derni&egrave;re mise &agrave; jour : 17 juin 2026</p>
+
+    <p>
+        Maclaque est con&ccedil;u avec le respect de votre vie priv&eacute;e comme priorit&eacute;.
+        Cette politique explique quelles donn&eacute;es sont collect&eacute;es, pourquoi, et comment les exercer vos droits.
+    </p>
+
+    <h2>1. Responsable du traitement</h2>
+    <p>
+        Melvyn Beherec, entrepreneur individuel<br>
+        Email : <a href="mailto:contact@maclaque.shop">contact@maclaque.shop</a>
+    </p>
+
+    <h2>2. Donn&eacute;es collect&eacute;es</h2>
+
+    <h3 style="font-size:0.95rem;margin-top:20px;margin-bottom:12px;color:var(--color-text-high);">a) Sur le site maclaque.shop</h3>
+    <p>
+        Le site ne d&eacute;pose <strong>aucun cookie</strong> de tracking et n'utilise <strong>aucun outil d'analytics</strong>.
+        Lors de l'achat, vous &ecirc;tes redirig&eacute; vers Stripe qui collecte les informations n&eacute;cessaires au paiement
+        (email, donn&eacute;es bancaires). Ces donn&eacute;es sont trait&eacute;es par Stripe selon leur propre
+        <a href="https://stripe.com/fr/privacy" target="_blank" rel="noopener">politique de confidentialit&eacute;</a>.
+    </p>
+
+    <h3 style="font-size:0.95rem;margin-top:20px;margin-bottom:12px;color:var(--color-text-high);">b) Dans l'application Maclaque</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Donn&eacute;e</th>
+                <th>Finalit&eacute;</th>
+                <th>Stockage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Identifiant appareil (UUID al&eacute;atoire)</td>
+                <td>Limiter l'abus de la g&eacute;n&eacute;ration de sons IA</td>
+                <td>Local (UserDefaults) + transmis au proxy lors de la g&eacute;n&eacute;ration</td>
+            </tr>
+            <tr>
+                <td>Pr&eacute;f&eacute;rences utilisateur (volume, pack, etc.)</td>
+                <td>Sauvegarder vos r&eacute;glages</td>
+                <td>Local uniquement (UserDefaults)</td>
+            </tr>
+            <tr>
+                <td>Texte saisi pour la g&eacute;n&eacute;ration de sons</td>
+                <td>G&eacute;n&eacute;rer les fichiers audio via ElevenLabs</td>
+                <td>Transmis au proxy, non conserv&eacute; apr&egrave;s g&eacute;n&eacute;ration</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        <strong>L'application ne collecte aucune donn&eacute;e d'analytics, de crash, de localisation ou de comportement.</strong>
+        Aucune donn&eacute;e n'est envoy&eacute;e &agrave; des tiers &agrave; l'exception du service de synth&egrave;se vocale
+        (ElevenLabs, via un proxy Cloudflare Workers) utilis&eacute; uniquement lors de la cr&eacute;ation de sons personnalis&eacute;s.
+    </p>
+
+    <h2>3. Base l&eacute;gale</h2>
+    <p>
+        Le traitement des donn&eacute;es repose sur l'<strong>ex&eacute;cution du contrat</strong> (article 6.1.b du RGPD) :
+        les donn&eacute;es sont n&eacute;cessaires pour fournir le service achet&eacute; (g&eacute;n&eacute;ration de sons custom).
+    </p>
+
+    <h2>4. Transferts hors UE</h2>
+    <p>
+        Le proxy de g&eacute;n&eacute;ration de sons est h&eacute;berg&eacute; par Cloudflare (USA). Les donn&eacute;es de paiement
+        sont trait&eacute;es par Stripe (USA). Ces transferts sont encadr&eacute;s par le EU-US Data Privacy Framework.
+    </p>
+
+    <h2>5. Dur&eacute;e de conservation</h2>
+    <p>
+        Les donn&eacute;es locales (pr&eacute;f&eacute;rences, UUID) persistent tant que l'application est install&eacute;e.
+        La d&eacute;sinstallation supprime toutes les donn&eacute;es locales.
+        Les textes envoy&eacute;s pour g&eacute;n&eacute;ration ne sont pas conserv&eacute;s apr&egrave;s traitement.
+    </p>
+
+    <h2>6. Vos droits (RGPD)</h2>
+    <p>Conform&eacute;ment au R&egrave;glement G&eacute;n&eacute;ral sur la Protection des Donn&eacute;es, vous disposez des droits suivants :</p>
+    <ul style="list-style:none;padding:0;">
+        <li>&bull; <strong>Acc&egrave;s</strong> &mdash; obtenir une copie de vos donn&eacute;es</li>
+        <li>&bull; <strong>Rectification</strong> &mdash; corriger des donn&eacute;es inexactes</li>
+        <li>&bull; <strong>Effacement</strong> &mdash; demander la suppression de vos donn&eacute;es</li>
+        <li>&bull; <strong>Portabilit&eacute;</strong> &mdash; recevoir vos donn&eacute;es dans un format structur&eacute;</li>
+        <li>&bull; <strong>Opposition</strong> &mdash; vous opposer au traitement</li>
+    </ul>
+    <p>
+        Pour exercer ces droits, contactez-nous &agrave;
+        <a href="mailto:contact@maclaque.shop">contact@maclaque.shop</a>.
+        Nous r&eacute;pondons sous 30 jours maximum.
+    </p>
+    <p>
+        En cas de r&eacute;clamation, vous pouvez saisir la CNIL :
+        <a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a>.
+    </p>
+
+    <h2>7. Modifications</h2>
+    <p>
+        Cette politique peut &ecirc;tre mise &agrave; jour. La date de derni&egrave;re modification est indiqu&eacute;e en haut de page.
+    </p>
+</div>
+
+<footer>
+    &copy; 2026 Maclaque &mdash; <a href="/">Accueil</a> &middot; <a href="/mentions-legales.html">Mentions l&eacute;gales</a> &middot; <a href="/cgv.html">CGV</a>
+</footer>
+
+</body>
+</html>
