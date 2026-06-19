@@ -242,7 +242,7 @@
 
     try {
         const res = await fetch(
-            "https://api.maclaque.shop/v1/activation/lookup?session_id=" + encodeURIComponent(sessionId)
+            "https://maclaque-proxy.melbeherec.workers.dev/v1/activation/lookup?session_id=" + encodeURIComponent(sessionId)
         );
         if (!res.ok) throw new Error("not found");
         const data = await res.json();
