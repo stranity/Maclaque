@@ -265,44 +265,70 @@
             background: var(--color-surface);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
-            padding: 24px 16px;
+            padding: 28px 20px;
             text-align: center;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pack-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--color-primary);
+            opacity: 0;
+            transition: opacity 0.25s;
         }
 
         .pack-card:hover {
             border-color: var(--color-primary);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(255, 42, 31, 0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(255, 42, 31, 0.12);
+        }
+
+        .pack-card:hover::before {
+            opacity: 1;
         }
 
         .pack-card.custom {
-            border: 1px dashed var(--color-accent);
-            background: linear-gradient(135deg, var(--color-surface), rgba(255, 214, 10, 0.05));
+            border: 2px dashed var(--color-accent);
+            background: linear-gradient(135deg, var(--color-surface), rgba(255, 214, 10, 0.06));
+        }
+
+        .pack-card.custom::before {
+            background: var(--color-accent);
         }
 
         .pack-card.custom:hover {
             border-color: var(--color-accent);
-            box-shadow: 0 8px 32px rgba(255, 214, 10, 0.15);
+            box-shadow: 0 12px 40px rgba(255, 214, 10, 0.12);
         }
 
-        .pack-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+        .pack-emoji { font-size: 2.8rem; margin-bottom: 14px; }
 
         .pack-card h3 {
-            font-size: 1rem;
-            margin-bottom: 4px;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            font-weight: 700;
         }
 
         .pack-card p {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             color: var(--color-text-low);
+            line-height: 1.4;
         }
 
         .pack-clips {
-            font-size: 0.7rem;
+            font-size: 0.72rem;
             color: var(--color-primary-light);
-            margin-top: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
         .pack-card.custom .pack-clips {
@@ -395,13 +421,32 @@
 
         .pricing-card {
             background: var(--color-surface);
-            border: 2px solid var(--color-primary);
+            border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
-            padding: 48px;
+            padding: 36px 28px;
             text-align: center;
             max-width: 400px;
             margin: 0 auto;
             position: relative;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.popular {
+            border: 2px solid var(--color-accent);
+            transform: scale(1.04);
+            box-shadow: 0 0 40px rgba(255, 214, 10, 0.1);
+        }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.04) translateY(-4px);
+        }
+
+        .pricing-card.free-tier {
+            opacity: 0.85;
         }
 
         .pricing-badge {
@@ -415,31 +460,42 @@
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
+            white-space: nowrap;
         }
 
         .pricing-price {
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            color: var(--color-primary);
-            margin: 16px 0;
+            color: var(--color-text-high);
+            margin: 12px 0;
+        }
+
+        .pricing-card.popular .pricing-price {
+            color: var(--color-accent);
         }
 
         .pricing-price small {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--color-text-low);
             font-weight: 400;
         }
 
+        .pricing-subtitle {
+            font-size: 0.8rem;
+            color: var(--color-text-low);
+            margin-bottom: 16px;
+        }
+
         .pricing-features {
             list-style: none;
-            margin: 24px 0;
+            margin: 20px 0;
             text-align: left;
         }
 
         .pricing-features li {
-            padding: 8px 0;
+            padding: 7px 0;
             color: var(--color-text-low);
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -447,8 +503,14 @@
 
         .pricing-features li::before {
             content: '\2713';
-            color: var(--color-primary);
+            color: #4ADE80;
             font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .pricing-features li.highlight {
+            color: var(--color-text-high);
+            font-weight: 600;
         }
 
         .pricing-cta {
@@ -459,7 +521,7 @@
             border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 1.125rem;
+            font-size: 1rem;
             transition: all 0.2s;
             margin-top: 8px;
         }
@@ -467,6 +529,27 @@
         .pricing-cta:hover {
             background: var(--color-primary-dark);
             transform: translateY(-2px);
+        }
+
+        .pricing-cta.cta-accent {
+            background: var(--color-accent);
+            color: #000;
+        }
+
+        .pricing-cta.cta-accent:hover {
+            background: #e6c109;
+        }
+
+        .pricing-cta.cta-outline {
+            background: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-low);
+        }
+
+        .pricing-cta.cta-outline:hover {
+            border-color: var(--color-text-low);
+            color: var(--color-text-high);
+            background: transparent;
         }
 
         .pricing-guarantee {
@@ -652,22 +735,22 @@
         <div class="pack-card custom">
             <div class="pack-emoji">&#x1F399;</div>
             <h3>Ton pack</h3>
-            <p>Ta voix ou celle d'un pote</p>
-            <div class="pack-clips">G&eacute;n&eacute;rations illimit&eacute;es</div>
+            <p>Clone une voix et cr&eacute;e tes sons</p>
+            <div class="pack-clips">D&egrave;s 4,99&euro;</div>
         </div>
     </div>
 
     <div class="custom-banner">
         <div class="custom-banner-icon">&#x1F399;</div>
         <div>
-            <h3>Clone n'importe quelle voix. <span>G&eacute;n&egrave;re tes sons &agrave; l'infini.</span></h3>
-            <p>Importe un MP3 de n'importe quelle voix &mdash; la tienne, un pote, une personnalit&eacute;.
-               Maclaque la clone par IA et tu peux g&eacute;n&eacute;rer autant de phrases que tu veux avec.
-               Gifle, branchement, couvercle : chaque &eacute;v&eacute;nement a son son.</p>
+            <h3>Clone une voix. <span>Cr&eacute;e ton pack perso.</span></h3>
+            <p>Importe un MP3 d'une voix (la tienne, un pote, une personnalit&eacute;).
+               Maclaque la clone par IA et g&eacute;n&egrave;re un pack complet : gifles, branchement, couvercle.
+               Chaque voix clon&eacute;e = un pack personnalis&eacute; unique.</p>
             <div class="custom-tags">
                 <span class="custom-tag">Clonage de voix IA</span>
                 <span class="custom-tag">G&eacute;n&eacute;rations illimit&eacute;es</span>
-                <span class="custom-tag">3 &agrave; 10 voix clonables</span>
+                <span class="custom-tag">3 &agrave; 10 voix selon le plan</span>
                 <span class="custom-tag">D&egrave;s 4,99&euro;</span>
             </div>
         </div>
@@ -696,32 +779,32 @@
     <h2 class="section-title">Paiement unique. <span>&Agrave; vie.</span></h2>
     <p class="section-subtitle">Pas d'abonnement. Tu payes une fois, c'est &agrave; toi pour toujours.</p>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 960px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 960px; margin: 0 auto; align-items: start;">
         <!-- Gratuit -->
-        <div class="pricing-card" style="border-color: var(--color-border); max-width: none;">
+        <div class="pricing-card free-tier" style="max-width: none;">
             <h3>Essai gratuit</h3>
             <div class="pricing-price">0&euro;</div>
+            <p class="pricing-subtitle">D&eacute;couvre si ton Mac r&eacute;agit</p>
             <ul class="pricing-features">
-                <li>10 claques gratuites</li>
-                <li>6 packs de sons (119 clips)</li>
-                <li>D&eacute;tection gifle + charge + couvercle</li>
+                <li>10 claques pour tester</li>
+                <li>6 packs de sons inclus</li>
                 <li>Aucune carte requise</li>
             </ul>
-            <a href="#installation" class="pricing-cta" style="background: var(--color-surface); border: 1px solid var(--color-border);">
+            <a href="#installation" class="pricing-cta cta-outline">
                 T&eacute;l&eacute;charger
             </a>
         </div>
 
         <!-- Basic -->
-        <div class="pricing-card" style="border-color: var(--color-border); max-width: none;">
+        <div class="pricing-card" style="max-width: none; border-color: var(--color-primary);">
             <h3>Maclaque</h3>
-            <div class="pricing-price">4,99&euro; <small>TTC</small></div>
+            <div class="pricing-price" style="color: var(--color-primary);">4,99&euro; <small>TTC</small></div>
+            <p class="pricing-subtitle">Paiement unique &mdash; &agrave; vie</p>
             <ul class="pricing-features">
-                <li><strong>Claques illimit&eacute;es</strong></li>
+                <li class="highlight">Claques illimit&eacute;es</li>
                 <li>6 packs de sons (119 clips)</li>
-                <li>3 voix clon&eacute;es</li>
-                <li>3 packs custom</li>
-                <li>G&eacute;n&eacute;rations illimit&eacute;es</li>
+                <li>3 voix clon&eacute;es + packs perso</li>
+                <li>G&eacute;n&eacute;rations IA illimit&eacute;es</li>
                 <li>Mises &agrave; jour &agrave; vie</li>
             </ul>
             <a href="https://buy.stripe.com/3cIaEP7mPcRofPeh0T6oo00" class="pricing-cta">
@@ -730,19 +813,19 @@
         </div>
 
         <!-- Plus -->
-        <div class="pricing-card" style="max-width: none; position: relative;">
-            <div class="pricing-badge">Recommand&eacute;</div>
+        <div class="pricing-card popular" style="max-width: none;">
+            <div class="pricing-badge">&#x2B50; Recommand&eacute;</div>
             <h3>Maclaque<span style="color: var(--color-accent);">+</span></h3>
             <div class="pricing-price">9,99&euro; <small>TTC</small></div>
+            <p class="pricing-subtitle">Pour les vrais gifle-addicts</p>
             <ul class="pricing-features">
-                <li><strong>Tout de Maclaque</strong>, plus :</li>
-                <li>10 voix clon&eacute;es (pote, personnalit&eacute;...)</li>
-                <li>10 packs custom</li>
-                <li>G&eacute;n&eacute;rations illimit&eacute;es</li>
-                <li>Acc&egrave;s prioritaire aux nouveaux packs</li>
-                <li>Support prioritaire par email</li>
+                <li class="highlight">Tout de Maclaque, plus :</li>
+                <li>10 voix clon&eacute;es (pote, c&eacute;l&eacute;brit&eacute;...)</li>
+                <li>10 packs personnalis&eacute;s</li>
+                <li>Acc&egrave;s prioritaire nouveaux packs</li>
+                <li>Support prioritaire</li>
             </ul>
-            <a href="https://buy.stripe.com/cNi3cn7mP3gOdH611V6oo01" class="pricing-cta" style="background: var(--color-accent); color: #000;">
+            <a href="https://buy.stripe.com/cNi3cn7mP3gOdH611V6oo01" class="pricing-cta cta-accent">
                 Acheter Maclaque+ &mdash; 9,99&euro;
             </a>
         </div>
