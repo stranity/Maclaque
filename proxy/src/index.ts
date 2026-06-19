@@ -2,7 +2,14 @@ interface Env {
   KV: KVNamespace;
   ELEVENLABS_API_KEY: string;
   APP_SECRET: string;
+  STRIPE_WEBHOOK_SECRET: string;
 }
+
+// ── Payment Link → Tier mapping ──────────────────────────────────────
+const PAYMENT_LINK_TIERS: Record<string, string> = {
+  plink_1TjOQc1qbbwyueA0kbNAztMU: "basic",  // 4.99€
+  plink_1TjPLv1qbbwyueA0oGhXlefY: "plus",   // 9.99€
+};
 
 // ── Preset voices (available to everyone) ─────────────────────────────
 const PRESET_VOICES = new Set([
@@ -29,23 +36,31 @@ const TIER_LIMITS: Record<string, { clones: number; packs: number }> = {
 // ── Router ─────────────────────────────────────────────────────────────
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+
+    // ── Public endpoints (no app secret needed) ──
+    if (request.method === "POST" && url.pathname === "/webhook/stripe") {
+      return handleStripeWebhook(request, env);
+    }
+    if (request.method === "GET" && url.pathname === "/v1/activation/lookup") {
+      return handleActivationLookup(url, env);
+    }
+
+    // ── App endpoints (require auth) ──
     if (request.method !== "POST") {
       return new Response("Not Found", { status: 404 });
     }
 
-    // Validate app secret
     const appSecret = request.headers.get("X-App-Secret");
     if (!appSecret || appSecret !== env.APP_SECRET) {
       return json({ error: "Unauthorized" }, 401);
     }
 
-    // Device UUID
     const deviceId = request.headers.get("X-Device-Id");
     if (!deviceId || deviceId.length < 10) {
       return json({ error: "Missing device identifier" }, 400);
     }
 
-    const url = new URL(request.url);
     switch (url.pathname) {
       case "/v1/generate":
         return handleGenerate(request, env, deviceId);
@@ -250,22 +265,151 @@ async function handleTierActivate(
     return json({ error: "Code manquant" }, 400);
   }
 
-  // Check code in KV (format: activation codes stored as "code:{code}" → "unused")
+  // Check code in KV (format: "code:{code}" → "unused:basic" or "unused:plus")
   const codeKey = `code:${code}`;
   const codeStatus = await env.KV.get(codeKey);
 
   if (!codeStatus) {
     return json({ error: "Code invalide" }, 400);
   }
-  if (codeStatus !== "unused") {
+  if (!codeStatus.startsWith("unused:")) {
     return json({ error: "Code déjà utilisé" }, 400);
   }
 
-  // Activate Plus tier for this device
-  await env.KV.put(`tier:${deviceId}`, "plus");
+  const tier = codeStatus.replace("unused:", "");
+  await env.KV.put(`tier:${deviceId}`, tier);
   await env.KV.put(codeKey, `used:${deviceId}:${new Date().toISOString()}`);
 
-  return json({ tier: "plus", message: "Maclaque+ activé !" }, 200);
+  const label = tier === "plus" ? "Maclaque+" : "Maclaque";
+  return json({ tier, message: `${label} activé !` }, 200);
+}
+
+// ── Stripe Webhook ────────────────────────────────────────────────────
+async function handleStripeWebhook(
+  request: Request,
+  env: Env
+): Promise<Response> {
+  const signature = request.headers.get("stripe-signature");
+  if (!signature) {
+    return json({ error: "Missing signature" }, 400);
+  }
+
+  const body = await request.text();
+
+  // Verify Stripe webhook signature
+  const verified = await verifyStripeSignature(body, signature, env.STRIPE_WEBHOOK_SECRET);
+  if (!verified) {
+    return json({ error: "Invalid signature" }, 400);
+  }
+
+  const event = JSON.parse(body);
+
+  if (event.type !== "checkout.session.completed") {
+    return json({ received: true }, 200);
+  }
+
+  const session = event.data.object;
+  const paymentLink = session.payment_link as string | null;
+  const sessionId = session.id as string;
+  const customerEmail = session.customer_details?.email as string | null;
+
+  if (!paymentLink || !PAYMENT_LINK_TIERS[paymentLink]) {
+    return json({ received: true, skipped: "unknown payment link" }, 200);
+  }
+
+  const tier = PAYMENT_LINK_TIERS[paymentLink];
+
+  // Generate activation code: 4 groups of 4 uppercase alphanumeric chars
+  const code = generateActivationCode();
+
+  // Store code and session mapping in KV
+  await env.KV.put(`code:${code}`, `unused:${tier}`);
+  await env.KV.put(`session:${sessionId}`, JSON.stringify({
+    code,
+    tier,
+    email: customerEmail,
+    createdAt: new Date().toISOString(),
+  }));
+
+  return json({ received: true, code }, 200);
+}
+
+// ── Activation Lookup (for merci.html) ────────────────────────────────
+async function handleActivationLookup(
+  url: URL,
+  env: Env
+): Promise<Response> {
+  const sessionId = url.searchParams.get("session_id");
+  if (!sessionId) {
+    return json({ error: "Missing session_id" }, 400);
+  }
+
+  const raw = await env.KV.get(`session:${sessionId}`);
+  if (!raw) {
+    return json({ error: "Session not found" }, 404);
+  }
+
+  const data = JSON.parse(raw);
+  return new Response(JSON.stringify({
+    code: data.code,
+    tier: data.tier,
+  }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "https://maclaque.shop",
+    },
+  });
+}
+
+// ── Stripe signature verification (Web Crypto) ───────────────────────
+async function verifyStripeSignature(
+  payload: string,
+  header: string,
+  secret: string
+): Promise<boolean> {
+  const parts = header.split(",").reduce((acc, part) => {
+    const [key, value] = part.split("=");
+    acc[key.trim()] = value;
+    return acc;
+  }, {} as Record<string, string>);
+
+  const timestamp = parts["t"];
+  const sig = parts["v1"];
+  if (!timestamp || !sig) return false;
+
+  // Reject if timestamp is older than 5 minutes
+  const age = Math.floor(Date.now() / 1000) - parseInt(timestamp, 10);
+  if (age > 300) return false;
+
+  const signedPayload = `${timestamp}.${payload}`;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signedPayload));
+  const expected = Array.from(new Uint8Array(mac))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  return expected === sig;
+}
+
+// ── Generate activation code ──────────────────────────────────────────
+function generateActivationCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O/1/I confusion
+  const segments: string[] = [];
+  for (let s = 0; s < 4; s++) {
+    let seg = "";
+    for (let i = 0; i < 4; i++) {
+      seg += chars[Math.floor(Math.random() * chars.length)];
+    }
+    segments.push(seg);
+  }
+  return segments.join("-");
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────

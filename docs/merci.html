@@ -139,6 +139,52 @@
             color: var(--color-primary);
             text-decoration: none;
         }
+
+        .activation-code {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255, 214, 10, 0.08);
+            border: 2px dashed var(--color-accent);
+            border-radius: 12px;
+        }
+
+        .activation-code h3 {
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .activation-code .code {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            letter-spacing: 3px;
+            color: var(--color-text-high);
+            user-select: all;
+            cursor: pointer;
+        }
+
+        .activation-code .hint {
+            font-size: 0.75rem;
+            color: var(--color-text-low);
+            margin-top: 8px;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .tier-basic { background: var(--color-primary); color: white; }
+        .tier-plus { background: var(--color-accent); color: #000; }
+
+        .loading { color: var(--color-text-low); font-style: italic; }
     </style>
 </head>
 <body>
@@ -148,7 +194,10 @@
     <h1>Merci <span>!</span></h1>
     <p class="subtitle">Ton achat est confirm&eacute;. T&eacute;l&eacute;charge Maclaque et gifle ton Mac.</p>
 
-    <!-- REMPLACE CE LIEN par l'URL du DMG (GitHub Release ou serveur) -->
+    <div id="activation-section">
+        <p class="loading" id="loading-msg">Chargement de ton code d'activation...</p>
+    </div>
+
     <a href="https://github.com/stranity/maclaque/releases/latest/download/Maclaque-v1.0.dmg" class="download-btn">
         &#x2B07; T&eacute;l&eacute;charger Maclaque.dmg
     </a>
@@ -179,5 +228,48 @@
     </p>
 </footer>
 
+<script>
+(async function() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const section = document.getElementById("activation-section");
+    const loadingMsg = document.getElementById("loading-msg");
+
+    if (!sessionId) {
+        loadingMsg.style.display = "none";
+        return;
+    }
+
+    try {
+        const res = await fetch(
+            "https://api.maclaque.shop/v1/activation/lookup?session_id=" + encodeURIComponent(sessionId)
+        );
+        if (!res.ok) throw new Error("not found");
+        const data = await res.json();
+
+        const tierLabel = data.tier === "plus" ? "Maclaque+" : "Maclaque";
+        const tierClass = data.tier === "plus" ? "tier-plus" : "tier-basic";
+
+        section.innerHTML =
+            '<div class="activation-code">' +
+                '<span class="tier-badge ' + tierClass + '">' + tierLabel + '</span>' +
+                '<h3>Ton code d\'activation</h3>' +
+                '<div class="code" title="Clique pour copier">' + data.code + '</div>' +
+                '<p class="hint">Copie ce code et colle-le dans l\'app (Param\u00e8tres \u2192 Activer)</p>' +
+            '</div>';
+
+        section.querySelector(".code").addEventListener("click", function() {
+            navigator.clipboard.writeText(data.code);
+            this.style.color = "#FFD60A";
+            this.textContent = "Copi\u00e9 !";
+            var code = data.code;
+            var el = this;
+            setTimeout(function() { el.textContent = code; el.style.color = ""; }, 1500);
+        });
+    } catch (e) {
+        loadingMsg.textContent = "";
+    }
+})();
+</script>
 </body>
 </html>
